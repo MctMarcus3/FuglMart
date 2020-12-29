@@ -10,6 +10,10 @@ def home():
 def home():
     return "<h1>Local File</>"
 
+@app.route('/Test')
+def home():
+    return "<h1>Local File</>"
+
 @app.route('/login')
 def login():
     return render_template('index.html')
