@@ -6,13 +6,9 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route('/local')
-def home():
-    return "<h1>Local File</>"
-
 @app.route('/login')
 def login():
-    return render_template('index.html')
+    return  "<h1>Login</h1>"
 
 @app.errorhandler(404)
 def page_not_found(e):
