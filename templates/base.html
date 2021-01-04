@@ -62,6 +62,9 @@
         {% include 'includes/_footer.html' %}
     {% endblock %}
 
+
+    {% include 'includes/_login_modal.html' %}
+
     {% block scripts %}
     <!-- jQuery library -->
     <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>

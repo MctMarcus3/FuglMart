@@ -9,7 +9,7 @@ def home():
 
 @app.route('/account')
 def account():
-    return render_template('accounts.html')
+    return render_template('account.html')
 
 @app.route('/login')
 def login():
