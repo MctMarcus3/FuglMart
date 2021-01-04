@@ -2,14 +2,31 @@ from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
 
-
 @app.route('/')
+@app.route('/index')
 def home():
     return render_template('index.html')
+
 
 @app.route('/account')
 def account():
     return render_template('account.html')
+
+
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
+
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
+
+@app.route('/product')
+def product():
+    return render_template('product.html')
+
 
 @app.route('/login')
 def login():
