@@ -5,15 +5,36 @@ import shelve
 
 app = Flask(__name__)
 
-
 @app.route('/')
+@app.route('/index')
 def home():
     return render_template('index.html')
+
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
+
+
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
+
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
+
+@app.route('/product')
+def product():
+    return render_template('product.html')
 
 
 @app.route('/login')
 def login():
     return render_template('index.html')
+
 
 
 @app.route('/createPost', methods=['GET', 'POST'])
@@ -55,6 +76,11 @@ def retrive_posts():
         posts_list.append(posts)
 
     return render_template('retrievePosts.html', count=len(posts_list), posts=posts_list)
+
+@app.route('/inventory')
+def inventory():
+    return render_template('inventory.html')
+
 
 @app.errorhandler(404)
 def page_not_found(e):

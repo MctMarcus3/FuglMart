@@ -1,0 +1,36 @@
+{% if product_list %}
+  {% for i in product_list.values() %}
+  <!-- start single product item -->
+  <li>
+    <figure>
+      <a class="aa-product-img" href={{i["productLink"]}}><img src={{url_for('static', filename=i["imgsrc"])}} alt={{i["altText"]}}></a>
+      <a class="aa-add-card-btn"href={{i["productLink"]}}><span class="fa fa-shopping-cart"></span>Add To Cart</a>
+      <figcaption>
+        <h4 class="aa-product-title"><a href={{i["productLink"]}}>{{i["productName"]}}</a></h4>
+        <span class="aa-product-price">{{"$%.2f"|format(i["price"])}}</span>
+        {% if i["oldprice"] %}
+        <span class="aa-product-price"><del>{{"$%.2f"|format(i["oldprice"])}}</del></span>
+        {% endif %}
+        <p class="aa-product-descrip">{{i["description"]}}</p>
+      </figcaption>
+    </figure>
+    <div class="aa-product-hvr-content">
+      <a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>
+      <a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>
+      <a href="#" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal" data-target="#quick-view-modal"><span class="fa fa-search"></span></a>
+    </div>
+    <!-- product badges -->
+    {% if i["oldprice"] and not i['badge'] == 'soldout' %}
+    <span class="aa-badge aa-sale" href="#">SALE!</span>
+    {% endif %}
+
+    {% if i['badge'] == 'soldout' %}
+    <span class="aa-badge aa-sold-out" href="#">Sold Out!</span>
+    {% endif %}
+/
+    {% if i['badge'] == 'hot' and not i['badge'] == 'soldout' and not i['oldprice']  %}
+      <span class="aa-badge aa-hot" href="#">HOT!</span>
+    {% endif %}
+  </li>
+  {% endfor %}
+{% endif %}
