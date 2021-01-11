@@ -3,3 +3,6 @@ venv/*
 .idea/*
 *.pyc
 __pycache__/*
+*.db.bak
+*.db.dat
+*.db.dir
