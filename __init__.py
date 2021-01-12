@@ -81,6 +81,30 @@ def retrive_posts():
 def inventory():
     return render_template('inventory.html')
 
+@app.route('/instantfood')
+def instantfood():
+    return render_template('instantfood.html')
+
+@app.route('/staples')
+def staples():
+    return render_template('staples.html')
+
+@app.route('/drinks')
+def drinks():
+    return render_template('drinks.html')
+
+@app.route('/personalcare')
+def personalcare():
+    return render_template('personalcare.html')
+
+@app.route('/householdessentials')
+def householdessentials():
+    return render_template('householdessentials.html')
+
+@app.route('/snacks')
+def snacks():
+    return render_template('snacks')
+
 
 @app.errorhandler(404)
 def page_not_found(e):
