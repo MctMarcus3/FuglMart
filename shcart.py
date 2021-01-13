@@ -37,12 +37,8 @@ class item:
     def set_item_price(self, item_price):
         self.__item_price = item_price
 
-products_dict = {}
-db = shelve.open('products.db','c')
-products = ['orange', 'apple', 'grapes']
-db['products'] = products
-db.close
 
-dbr = shelve.open('products.db','r')
+
+
 
 
