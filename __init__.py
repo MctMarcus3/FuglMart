@@ -103,7 +103,7 @@ def householdessentials():
 
 @app.route('/snacks')
 def snacks():
-    return render_template('snacks')
+    return render_template('snacks.html')
 
 
 @app.errorhandler(404)
