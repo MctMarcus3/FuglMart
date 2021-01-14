@@ -1,8 +1,6 @@
 # Ignore venv
 venv/*
-.idea/*
-*.pyc
-__pycache__/*
-*.db.bak
-*.db.dat
-*.db.dir
+.idea
+*/venv
+__pycache__
+*.db.*

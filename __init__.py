@@ -1,9 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session
+from dashboard import dashboard
+from inventory import inventory
 from Forms import CreatePostForm
 from Posts import Posts
 import shelve
 
 app = Flask(__name__)
+app.secret_key = 'any_random_string'
+app.register_blueprint(inventory, url_prefix="/inventory")
+app.register_blueprint(dashboard, url_prefix="/dashboard")
+
 
 @app.route('/')
 @app.route('/index')
@@ -49,7 +55,7 @@ def create_user():
         except KeyError:
             print("Error in retrieving Posts from storage.db.")
 
-        post = Posts(create_post_form.Title.data, create_post_form.Content.data,)
+        post = Posts(create_post_form.Title.data, create_post_form.Content.data)
         posts_dict[post.get_posts_id()] = post
         db['Posts'] = posts_dict
         # print(posts_dict)
@@ -59,7 +65,6 @@ def create_user():
               f"successfully with post_id == {post.get_posts_id()}")
 
         db.close()
-
         return redirect(url_for('home'))
     return render_template('createPost.html', form=create_post_form)
 
@@ -76,10 +81,6 @@ def retrive_posts():
         posts_list.append(posts)
 
     return render_template('retrievePosts.html', count=len(posts_list), posts=posts_list)
-
-@app.route('/inventory')
-def inventory():
-    return render_template('inventory.html')
 
 @app.route('/instantfood')
 def instantfood():

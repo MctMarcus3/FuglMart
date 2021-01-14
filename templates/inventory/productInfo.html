@@ -1,0 +1,25 @@
+{% extends "./base.html" %}
+
+{% block content %}
+{% from"./includes/_formHelper.html" import render_field %}
+
+<h1 class="display-4">Product Details</h1>
+
+<form method="POST" action="">
+  <div class="form-group">
+    {{ render_field(form.productName, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ render_field(form.stock, class="form-control") }}
+  </div>
+  {% if showUPC %}
+      <div class="form-group">
+        {{ render_field(form.upc, class="form-control") }}
+      </div>
+  {% endif %}
+  <div class="form-group">
+    {{ render_field(form.price, class="form-control") }}
+  </div>
+  <input type="submit" value="Submit" class="btn btn-primary"/>
+</form>
+{% endblock %}
