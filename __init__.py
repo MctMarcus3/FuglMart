@@ -110,6 +110,14 @@ def snacks():
 def page_not_found(e):
     return render_template('404.html')
 
+@app.route('/createProduct')
+def retrieve_product():
+    products = {}
+    db = shelve.open('storage.db', 'c')
+    products = db['Products']
+    db.close()
+
+    return render_template('createProduct.html')
 
 
 
