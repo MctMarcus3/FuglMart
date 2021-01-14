@@ -3,7 +3,8 @@ from dashboard import dashboard
 from inventory import inventory
 from Forms import CreatePostForm
 from Posts import Posts
-import shelve
+import shelve, shcart
+
 
 app = Flask(__name__)
 app.secret_key = 'any_random_string'
@@ -104,12 +105,21 @@ def householdessentials():
 
 @app.route('/snacks')
 def snacks():
-    return render_template('snacks')
+    return render_template('snacks.html')
 
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html')
+
+@app.route('/createProduct')
+def retrieve_product():
+    create_product_form = createProduct_form(request.form)
+    if request.method == 'POST' and create_product_form.validate():
+        return redirect(url_for('home'))
+    return render_template('createProduct.html', form = createProduct_form)
+
+
 
 
 if __name__ == '__main__':
