@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from Forms import CreatePostForm, createProduct_form
 from Posts import Posts
 import shelve, shcart
+from shcart import item
 
 
 app = Flask(__name__)
@@ -111,12 +112,13 @@ def snacks():
 def page_not_found(e):
     return render_template('404.html')
 
-@app.route('/createProduct')
-def retrieve_product():
+@app.route('/createProduct', methods=['POST', 'GET'])
+def create_product():
     create_product_form = createProduct_form(request.form)
     if request.method == 'POST' and create_product_form.validate():
+
         return redirect(url_for('home'))
-    return render_template('createProduct.html', form = createProduct_form)
+    return render_template('createProduct.html', form = create_product_form)
 
 
 
