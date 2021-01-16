@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from dashboard import dashboard
 from inventory import inventory
-from Forms import CreatePostForm
+from Forms import CreatePostForm, CreateUserForm, createProduct_form
 from Posts import Posts
+from User import User
 import shelve, shcart
 from shcart import item
 
@@ -33,6 +34,7 @@ def product():
     return render_template('product.html')
 
 
+
 @app.route('/account', methods=['POST', 'GET'])
 def account():
     create_user_form = CreateUserForm(request.form)
@@ -45,7 +47,7 @@ def account():
         except:
             print("Error in retrieving Users from storage.db.")
 
-        user = User.User(create_user_form.email.data, create_user_form.password.data)
+        user = User(create_user_form.email.data, create_user_form.password.data)
         users_dict[user.get_email()] = user
         db['Users'] = users_dict
 
