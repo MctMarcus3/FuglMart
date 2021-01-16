@@ -65,11 +65,10 @@ def account():
 
     return render_template('account.html', form=create_user_form)
 
-@app.route('/login')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     login_user_form = CreateUserForm(request.form)
     if request.method == 'POST' and login_user_form.validate():
-
         # Access shelve to retrieve users_dict
         users_dict = {}
         db = shelve.open('storage.db', 'c')
@@ -78,13 +77,15 @@ def login():
             users_dict = db['Users']
         except:
             print("Error in retrieving Users from storage.db.")
+
         if users_dict.get(login_user_form.email.data) is not None:
-            if users_dict.get(login_user_form.password.data) is not None:
+            if (users_dict[login_user_form.email.data].get_password() ==
+                    login_user_form.password.data):
                 return redirect(url_for('profile'))
             else:
-                print("Please fix me!")
-        return redirect(url_for('index'))
-    return render_template('login.html', form=login_user_form)
+                return render_template('account.html', error=True, form=login_user_form)
+        return render_template('account.html', error=True, form=login_user_form)
+    return render_template('account.html', form=login_user_form)
 
 @app.route('/profile')
 def profile():
