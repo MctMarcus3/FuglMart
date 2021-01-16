@@ -13,9 +13,9 @@ class CreateInventoryForm(Form):
 
 
 class UpdateInventoryForm(Form):
-        productName = StringField('ProductName', [validators.Length(min=1, max=80),
-                                  validators.DataRequired()])
-        stock = IntegerField('Stock',  [validators.NumberRange(min=0),
-                             validators.DataRequired()])
-        price = DecimalField('Price', [validators.NumberRange(min=0),
-                             validators.DataRequired()], places=2, rounding=None)
+    productName = StringField('ProductName', [validators.Length(min=1, max=80),
+                              validators.DataRequired()])
+    stock = IntegerField('Stock',  [validators.NumberRange(min=0),
+                         validators.DataRequired()])
+    price = DecimalField('Price', [validators.NumberRange(min=0),
+                         validators.DataRequired()], places=2, rounding=None)
