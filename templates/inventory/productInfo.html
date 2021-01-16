@@ -12,10 +12,10 @@
   <div class="form-group">
     {{ render_field(form.stock, class="form-control") }}
   </div>
-  {% if showUPC %}
-      <div class="form-group">
-        {{ render_field(form.upc, class="form-control") }}
-      </div>
+  {% if create %}
+  <div class="form-group">
+    {{ render_field(form.upc, class="form-control") }}
+  </div>
   {% endif %}
   <div class="form-group">
     {{ render_field(form.price, class="form-control") }}

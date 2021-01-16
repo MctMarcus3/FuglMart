@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, url_for, redirect, session
 from inventoryProduct import Product
 from inventoryForm import CreateInventoryForm
+from inventoryForm import UpdateInventoryForm
 import shelve
 
 inventory = Blueprint("inventory", __name__, static_folder="static", template_folder="templates")
@@ -16,17 +17,20 @@ def createNewProduct():
             inventory_dict = db['inventory']
         except KeyError:
             print("Error in retrieving inventory from storage.db.")
-
         product = Product(create_inventory_form.productName.data,
                           create_inventory_form.upc.data,
                           create_inventory_form.stock.data,
                           create_inventory_form.price.data)
-        inventory_dict[product.get_upc()] = product
-        db['inventory'] = inventory_dict
-
+        duplicate = False
+        if inventory_dict.get(product.get_upc()) is None:
+            inventory_dict[product.get_upc()] = product
+            db['inventory'] = inventory_dict
+            return redirect('/inventory')
+        else:
+            redirect('/updateproduct')
         db.close()
-        return redirect('/inventory')
-    return render_template('/inventory/productInfo.html', form=create_inventory_form, showUPC=True)
+    return render_template('/inventory/productInfo.html', form=create_inventory_form,
+                           create=True, duplicate=duplicate)
 
 
 @inventory.route("/")
@@ -51,8 +55,9 @@ def retrieve_inventory():
 
 @inventory.route('updateproduct/<string:id>', methods=['GET', 'POST'])
 def update_product(id):
-    update_product_form = CreateInventoryForm(request.form)
+    update_product_form = UpdateInventoryForm(request.form)
     if request.method == 'POST' and update_product_form.validate():
+        print("I'm Here")
         db = shelve.open('storage.db', 'w')
         inventory_dict = db['inventory']
         product = inventory_dict.get(id)
@@ -72,8 +77,7 @@ def update_product(id):
         update_product_form.productName.data = product.get_name()
         update_product_form.stock.data = product.get_stock()
         update_product_form.price.data = product.get_price()
-        update_product_form.upc.data = product.get_upc()
-        return render_template('/inventory/productInfo.html', form=update_product_form)
+        return render_template('/inventory/productInfo.html', form=update_product_form, update=True)
 
 
 @inventory.route('/deleteproduct/<string:id>', methods=['POST'])
@@ -87,4 +91,4 @@ def delete_product(id):
 
     session['product_deleted'] = product.get_name()
 
-    return redirect('/inventory/retrieveInventory')
+    return redirect('/inventory')

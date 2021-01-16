@@ -18,12 +18,6 @@ app.register_blueprint(dashboard, url_prefix="/dashboard")
 def home():
     return render_template('index.html')
 
-
-@app.route('/account')
-def account():
-    return render_template('account.html')
-
-
 @app.route('/checkout')
 def checkout():
     return render_template('checkout.html')
@@ -39,10 +33,54 @@ def product():
     return render_template('product.html')
 
 
+@app.route('/account', methods=['POST', 'GET'])
+def account():
+    create_user_form = CreateUserForm(request.form)
+    if request.method == 'POST' and create_user_form.validate():
+        users_dict = {}
+        db = shelve.open('storage.db', 'c')
+
+        try:
+            users_dict = db['Users']
+        except:
+            print("Error in retrieving Users from storage.db.")
+
+        user = User.User(create_user_form.email.data, create_user_form.password.data)
+        users_dict[user.get_email()] = user
+        db['Users'] = users_dict
+
+        # Test codes
+        users_dict = db['Users']
+        user = users_dict[user.get_email()]
+        print(user.get_email(), "was stored in storage.db successfully")
+
+        db.close()
+
+        return redirect(url_for('home'))
+
+    return render_template('account.html', form=create_user_form)
+
 @app.route('/login')
 def login():
-    return render_template('index.html')
+    login_user_form = LoginUserForm(request.form)
+    if request.method == 'POST' and login_user_form.validate():
 
+        # Access shelve to retrieve users_dict
+
+        for email in users_dict:
+            if login_user_form.email.data == email:
+                return redirect(url_for('profile'))
+
+        return redirect(url_for('index'))
+    return render_template('login.html', form=login_user_form)
+
+@app.route('/profile')
+def profile():
+    update_user_form = CreateUserForm(request.form)
+    if request.method == 'POST' and update_user_form.validate():
+
+        return redirect(url_for('profile'))
+    return render_template('login.html', form=update_user_form)
 
 
 @app.route('/createPost', methods=['GET', 'POST'])
