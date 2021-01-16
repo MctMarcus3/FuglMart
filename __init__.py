@@ -80,8 +80,9 @@ def login():
             print("Error in retrieving Users from storage.db.")
         if users_dict.get(login_user_form.email.data) is not None:
             if users_dict.get(login_user_form.password.data) is not None:
-            return redirect(url_for('profile'))
-
+                return redirect(url_for('profile'))
+            else:
+                print("Please fix me!")
         return redirect(url_for('index'))
     return render_template('login.html', form=login_user_form)
 
