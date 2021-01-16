@@ -46,8 +46,10 @@ def account():
             users_dict = db['Users']
         except:
             print("Error in retrieving Users from storage.db.")
-
-        user = User(create_user_form.email.data, create_user_form.password.data)
+        admin = False
+        if create_user_form.email.data.split("@")[1] == "fugl.store":
+            admin = True
+        user = User(create_user_form.email.data, create_user_form.password.data, admin)
         users_dict[user.get_email()] = user
         db['Users'] = users_dict
 
@@ -55,6 +57,7 @@ def account():
         users_dict = db['Users']
         user = users_dict[user.get_email()]
         print(user.get_email(), "was stored in storage.db successfully")
+        print(user.get_admin(), "was stored in storage.db successfully")
 
         db.close()
 
@@ -64,14 +67,20 @@ def account():
 
 @app.route('/login')
 def login():
-    login_user_form = LoginUserForm(request.form)
+    login_user_form = CreateUserForm(request.form)
     if request.method == 'POST' and login_user_form.validate():
 
         # Access shelve to retrieve users_dict
+        users_dict = {}
+        db = shelve.open('storage.db', 'c')
 
-        for email in users_dict:
-            if login_user_form.email.data == email:
-                return redirect(url_for('profile'))
+        try:
+            users_dict = db['Users']
+        except:
+            print("Error in retrieving Users from storage.db.")
+        if users_dict.get(login_user_form.email.data) is not None:
+            if users_dict.get(login_user_form.password.data) is not None:
+            return redirect(url_for('profile'))
 
         return redirect(url_for('index'))
     return render_template('login.html', form=login_user_form)
