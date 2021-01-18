@@ -2,9 +2,10 @@ from wtforms import Form, StringField, TextAreaField, validators, PasswordField
 from wtforms.fields.html5 import EmailField
 import email_validator
 
+
 class CreatePostForm(Form):
-    Title = StringField('Title', [validators.Length(min=1, max=150), validators.DataRequired()])
-    Content = TextAreaField('Content', [validators.Optional()])
+    title = StringField('Title', [validators.Length(min=1, max=150), validators.DataRequired()])
+    content = TextAreaField('Content', [validators.Optional()])
 
 class createProduct_form(Form):
     Name = StringField('Name', [validators.Length(min=1, max=150), validators.DataRequired()])
