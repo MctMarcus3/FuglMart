@@ -111,7 +111,8 @@ def create_post():
         post = Posts(create_post_form.title.data, create_post_form.content.data)
         posts_dict[post.get_posts_id()] = post
         db['Posts'] = posts_dict
-
+        db.close()
+        return redirect(url_for('retrieve_posts'))
     return render_template('createPost.html', form=create_post_form)
 
 
