@@ -16,7 +16,6 @@ class Posts:
     def get_content(self):
         return self.__content
 
-
     def set_posts_id(self, posts_id):
         self.__posts_id = posts_id
 
