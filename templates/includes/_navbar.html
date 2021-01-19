@@ -41,7 +41,7 @@
             <!-- logo  -->
             <div class="aa-logo">
               <!-- Text based logo -->
-              <a href="/index">
+              <a href={{ url_for("home") }}>
                 <span class="fa fa-shopping-cart"></span>
                 <p><strong>Fugl</strong> Store<span>The finest groceries with us.</span></p>
               </a>
@@ -120,8 +120,8 @@
 
             <li><a href=#.html">Forum <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="/createPost">Create Post</a></li>
-              <li><a href="/retrievePosts">View Posts</a></li>
+              <li><a href={{ url_for("posts.create_post") }}>Create Post</a></li>
+              <li><a href={{ url_for("posts.retrieve_posts") }}>View Posts</a></li>
             </ul>
 
             <li><a href="/blog-archive">Blog <span class="caret"></span></a>

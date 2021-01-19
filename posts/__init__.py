@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from .Form import CreatePostForm
+from .Posts import Posts
 import shelve
 
 posts = Blueprint("posts", __name__, static_folder="static", template_folder="templates")
@@ -29,7 +30,10 @@ def create_post():
 def retrieve_posts():
     posts_dict = {}
     db = shelve.open('storage.db', 'r')
-    posts_dict = db['Posts']
+    try:
+        posts_dict = db['Posts']
+    except:
+        print("Error in retrieving Posts from storage.db.")
     db.close()
 
     posts_list = []

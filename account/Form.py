@@ -5,4 +5,6 @@ import email_validator
 
 class CreateUserForm(Form):
     email = EmailField('Email', [validators.Email(), validators.DataRequired()])
-    password = PasswordField('Password', [validators.Length(min=1, max=150), validators.DataRequired()])
+    password = PasswordField('Password',
+                             [validators.Length(min=1, max=150),
+                              validators.DataRequired()])

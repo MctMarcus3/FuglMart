@@ -16,7 +16,7 @@ def create_product():
     if request.method == 'POST' and create_product_form.validate():
 
         return redirect(url_for('home'))
-        return render_template('createProduct.html', form = create_product_form)
+        return render_template('createProduct.html', form=create_product_form)
 
 
 @product.route('/instantfood')
