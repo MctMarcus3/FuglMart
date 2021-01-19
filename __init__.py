@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from dashboard import dashboard
 from inventory import inventory
+from products import products
 from Forms import CreatePostForm, CreateUserForm, createProduct_form
 from Posts import Posts
 from User import User
@@ -12,6 +13,7 @@ app = Flask(__name__)
 app.secret_key = 'any_random_string'
 app.register_blueprint(inventory, url_prefix="/inventory")
 app.register_blueprint(dashboard, url_prefix="/dashboard")
+app.register_blueprint(dashboard, url_prefix="/products")
 
 
 @app.route('/')
