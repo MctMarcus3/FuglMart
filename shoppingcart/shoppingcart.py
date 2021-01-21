@@ -1,6 +1,4 @@
-
-
-class item:
+class Item:
     item_count = 0
     def __init__(self, item_name, item_amount, item_price, item_code):
         item.item_count += 1
@@ -36,9 +34,3 @@ class item:
 
     def set_item_price(self, item_price):
         self.__item_price = item_price
-
-
-
-
-
-

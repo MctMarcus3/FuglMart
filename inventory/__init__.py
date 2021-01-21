@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, url_for, redirect, session
-from inventoryProduct import Product
-from inventoryForm import CreateInventoryForm
-from inventoryForm import UpdateInventoryForm
+from .Product import Product
+from .Form import CreateInventoryForm, UpdateInventoryForm
 import shelve
 
 inventory = Blueprint("inventory", __name__, static_folder="static", template_folder="templates")
@@ -25,9 +24,9 @@ def createNewProduct():
         if inventory_dict.get(product.get_upc()) is None:
             inventory_dict[product.get_upc()] = product
             db['inventory'] = inventory_dict
-            return redirect('/inventory')
+            return redirect(url_for('inventory.createNewProduct'))
         else:
-            redirect('/updateproduct')
+            redirect(url_for('inventory.createNewProduct'))
         db.close()
     return render_template('/inventory/productInfo.html', form=create_inventory_form,
                            create=True, duplicate=duplicate)
@@ -67,7 +66,7 @@ def update_product(id):
         db['inventory'] = inventory_dict
         db.close()
         session['product_created'] = product.get_name()
-        return redirect('/inventory')
+        return redirect(url_for('inventory.retrieve_inventory'))
     else:
         inventory_dict = {}
         db = shelve.open('storage.db', 'r')
@@ -91,4 +90,4 @@ def delete_product(id):
 
     session['product_deleted'] = product.get_name()
 
-    return redirect('/inventory')
+    return redirect(url_for("inventory.retrieve_inventory"))
