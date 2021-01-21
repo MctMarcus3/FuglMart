@@ -14,7 +14,7 @@ app.register_blueprint(inventory, url_prefix="/inventory")
 app.register_blueprint(dashboard, url_prefix="/dashboard")
 app.register_blueprint(account, url_prefix="/account")
 app.register_blueprint(shoppingcart, url_prefix="/shcart")
-app.register_blueprint(product, url_prefix="/products")
+app.register_blueprint(product, url_prefix="/product")
 app.register_blueprint(posts, url_prefix="/forum")
 
 
