@@ -22,7 +22,7 @@ def create_post():
         posts_dict[post.get_posts_id()] = post
         db['Posts'] = posts_dict
         db.close()
-        return redirect(url_for('retrieve_posts'))
+        return redirect(url_for('posts.retrieve_posts'))
     return render_template('createPost.html', form=create_post_form)
 
 
@@ -49,13 +49,14 @@ def delete_post(id):
     posts_dict = {}
     db = shelve.open('storage.db', 'w')
     posts_dict = db['Posts']
+    print(posts_dict)
 
     posts_dict.pop(id)
 
     db['Posts'] = posts_dict
     db.close()
 
-    return redirect(url_for('retrieve_posts'))
+    return redirect(url_for('posts.retrieve_posts'))
 
 
 @posts.route('/updatePosts/<int:id>/', methods=['GET', 'POST'])

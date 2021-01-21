@@ -11,7 +11,7 @@
   </div>
   <td><a href="/updatePosts/{{post.get_posts_id()}}" class="btn btn-warning">Update</a></td>
         <td>
-          <form action="{{url_for('delete_post', id=post.get_posts_id())}}" method="POST">
+          <form action="{{url_for('posts.delete_post', id=post.get_posts_id())}}" method="POST">
             <input type="submit" value="Delete" class="btn btn-danger">
           </form>
         </td>
