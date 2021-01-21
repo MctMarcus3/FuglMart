@@ -1,6 +1,6 @@
-from flask import render_template, request, redirect, url_for, Blueprint
+from flask import render_template, request, redirect, url_for, Blueprint, session
 import shelve
-from .Form import CreateUserForm
+from .Form import CreateUserForm, UserProfile
 from .User import User
 
 account = Blueprint("account", __name__,
@@ -29,8 +29,7 @@ def index():
             admin = True
         for user in users_dict.values():
             if user.get_email() == create_user_form.email.data:
-                return render_template('account.html', error=True, form=create_user_form)
-# To do: Create new error variable name and change error to tell user can't register with same email
+                return render_template('account.html', registererror=True, form=create_user_form)
         user = User(create_user_form.email.data, create_user_form.password.data, admin)
         users_dict[user.get_accountId()] = user
         db['Users'] = users_dict
@@ -63,16 +62,17 @@ def login():
         for user in users_dict.values():
             if user.get_email() == login_user_form.email.data:
                 if user.get_password() == login_user_form.password.data:
-                    return redirect(url_for('profile'))
+                    session['user_id'] = user.get_accountId()
+                    return redirect(url_for('account.profile'))
         # Check if email and password matches with database
         return render_template('account.html', error=True, form=login_user_form)
     return render_template('account.html', form=login_user_form)
 
 
 @account.route('/profile')
-def profile():
-    update_user_form = CreateUserForm(request.form)
+def profile(user):
+    update_user_form = UserProfile(request.form)
     if request.method == 'POST' and update_user_form.validate():
-
-        return redirect(url_for('profile'))
-    return render_template('login.html', form=update_user_form)
+        return redirect(url_for('account.profile'))
+    update_user_form.title.data = user.get_email()
+    return render_template('profile.html', form=update_user_form)
