@@ -55,7 +55,7 @@ def delete_post(id):
     db['Posts'] = posts_dict
     db.close()
 
-    return redirect(url_for('retrieve_posts'))
+    return redirect(url_for('posts.retrieve_posts'))
 
 
 @posts.route('/updatePosts/<int:id>/', methods=['GET', 'POST'])
@@ -72,7 +72,7 @@ def update_posts(id):
         db['Posts'] = posts_dict
         db.close()
 
-        return redirect(url_for('retrieve_posts'))
+        return redirect(url_for('posts.retrieve_posts'))
     else:
         posts_dict = {}
         db = shelve.open('storage.db', 'r')
