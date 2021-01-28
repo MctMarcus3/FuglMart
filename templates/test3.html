@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Forum - View Posts{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Forum</h1>
+<div class="row">
+    <div class="col-lg-3">
+        <a href="/forum/createPost" data-toggle="modal" class="btn btn-primary" title="Add Post">
+            <i class="glyphicon glyphicon-plus-sign"></i> Add Post
+        </a>
+    </div>
+</div>
+<div>
+  {% if count == 0 %}
+  <p>There are no posts.</p>
+  {% elif count == 1 %}
+  <p>There is 1 post.</p>
+  {% else %}
+  <p>There are {{ count }} posts.</p>
+  {% endif %}
+</div>
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Content</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for post in posts_list %}
+      <tr>
+        <td><a href="/forum/thread"> {{ post.get_title() }} </a></td>
+        <td>{{ post.get_content() }}</td>
+        <td><a href="/forum/updatePosts/{{post.get_posts_id()}}" class="btn btn-warning">Update</a></td>
+        <td>
+          <form action="{{url_for('posts.delete_post', id=post.get_posts_id())}}" method="POST">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -41,7 +41,7 @@ def retrieve_posts():
         posts = posts_dict.get(key)
         posts_list.append(posts)
 
-    return render_template('retrievePosts.html', count=len(posts_list), posts_list=posts_list)
+    return render_template('test3.html', count=len(posts_list), posts_list=posts_list)
 
 
 @posts.route('/deletePost/<int:id>', methods=['POST'])
@@ -73,7 +73,7 @@ def update_posts(id):
         db['Posts'] = posts_dict
         db.close()
 
-        return redirect(url_for('retrieve_posts'))
+        return redirect(url_for('posts.retrieve_posts'))
     else:
         posts_dict = {}
         db = shelve.open('storage.db', 'r')

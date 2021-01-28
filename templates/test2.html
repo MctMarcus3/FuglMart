@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4">Forum</h1>
+{% for post in posts_list %}
+<style>
+  .card{border-style: solid;}
+</style>
+  <div class="card" >
+    <div class="card-body">
+      <h3>{{ post.get_title() }}</h3>
+      <p class="card-text">{{ post.get_content() }}</p>
+    </div>
+  </div>
+  <td><a href="/forum/updatePosts/{{post.get_posts_id()}}" class="btn btn-warning">Update</a></td>
+        <td>
+          <form action="{{url_for('posts.delete_post', id=post.get_posts_id())}}" method="POST">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+    {% endfor %}
+{% endblock %}
