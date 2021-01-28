@@ -1,9 +1,23 @@
 from flask import Blueprint, render_template, request, url_for, redirect, session
+from werkzeug.utils import secure_filename
 from .Product import Product
 from .Form import CreateInventoryForm, UpdateInventoryForm
 import shelve
 
 inventory = Blueprint("inventory", __name__, static_folder="static", template_folder="templates")
+
+
+# @inventory.route('/upload')
+# def upload_file():
+#     return render_template('upload.html')
+#
+#
+# @inventory.route('/uploader', method=['GET', 'POST'])
+# def uploader():
+#     if request.method == 'POST':
+#         f = request.files['file']
+#         f.save(secure_filename(f.filename))
+#         return 'file uploaded successfully'
 
 
 @inventory.route('/createproduct', methods=['GET', 'POST'])
@@ -34,6 +48,9 @@ def createNewProduct():
 
 @inventory.route("/")
 def retrieve_inventory():
+    print(session["user"]["_User__admin"])
+    if session["user"]["_User__admin"] is False:
+        return render_template("404.html")
     inventory_dict = {}
 
     db = shelve.open('storage.db', 'c')
@@ -91,3 +108,8 @@ def delete_product(id):
     session['product_deleted'] = product.get_name()
 
     return redirect(url_for("inventory.retrieve_inventory"))
+
+
+@inventory.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
