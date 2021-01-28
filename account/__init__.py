@@ -62,7 +62,9 @@ def login():
         for user in users_dict.values():
             if user.get_email() == login_user_form.email.data:
                 if user.get_password() == login_user_form.password.data:
+                    print(user.__dict__)
                     session['user_id'] = user.get_accountId()
+                    session['user'] = user.__dict__
                     return redirect(url_for('account.profile'))
         # Check if email and password matches with database
         return render_template('account.html', error=True, form=login_user_form)
@@ -70,9 +72,9 @@ def login():
 
 
 @account.route('/profile')
-def profile(user):
+def profile():
     update_user_form = UserProfile(request.form)
     if request.method == 'POST' and update_user_form.validate():
         return redirect(url_for('account.profile'))
-    update_user_form.title.data = user.get_email()
+    # update_user_form.title.data = user.get_email()
     return render_template('profile.html', form=update_user_form)
