@@ -26,7 +26,7 @@ def create_post():
     return render_template('createPost.html', form=create_post_form)
 
 
-@posts.route('/')
+@posts.route('/retrievePosts')
 def retrieve_posts():
     posts_dict = {}
     db = shelve.open('storage.db', 'r')
@@ -42,6 +42,11 @@ def retrieve_posts():
         posts_list.append(posts)
 
     return render_template('test3.html', count=len(posts_list), posts_list=posts_list)
+
+
+@posts.route('/thread/<int:id>', methods=['POST'])
+def thread():
+    return render_template('thread.html')
 
 
 @posts.route('/deletePost/<int:id>', methods=['POST'])
