@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, Blueprint, session
+from flask import render_template, request, redirect, url_for, Blueprint, session, jsonify 
 import shelve
 from .Form import CreateUserForm, UserProfile
 from .User import User
@@ -34,6 +34,8 @@ def index():
         users_dict[user.get_accountId()] = user
         db['Users'] = users_dict
         db["UsersCount"] = User.count
+        session['user_id'] = user.get_accountId()
+        session['user'] = user.__dict__
         # Test codes
         users_dict = db['Users']
         user = users_dict[user.get_accountId()]

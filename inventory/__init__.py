@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, url_for, redirect, session
-from werkzeug.utils import secure_filename
 from .Product import Product
 from .Form import CreateInventoryForm, UpdateInventoryForm
 import shelve
 
 inventory = Blueprint("inventory", __name__, static_folder="static", template_folder="templates")
 
+# Implement CSV upload, CSV Download, JSON Upload, JSON Download
+# Implement FuzzySearch
 
 # @inventory.route('/upload')
 # def upload_file():
@@ -25,8 +26,11 @@ def createNewProduct():
     create_inventory_form = CreateInventoryForm(request.form)
     if request.method == 'POST' and create_inventory_form.validate():
         inventory_dict = {}
+        invent = []
+        inventory_list = []
         db = shelve.open('storage.db', 'c')
         try:
+            invent = db['invent']
             inventory_dict = db['inventory']
         except KeyError:
             print("Error in retrieving inventory from storage.db.")
@@ -34,23 +38,35 @@ def createNewProduct():
                           create_inventory_form.upc.data,
                           create_inventory_form.stock.data,
                           create_inventory_form.price.data)
-        duplicate = False
+        productT = {
+            "upc": create_inventory_form.upc.data,
+            "productName": create_inventory_form.productName.data,
+            "stock": create_inventory_form.stock.data,
+            "price": create_inventory_form.price.data
+        }
+        invent.append(product)
+        inventory_list.append(productT)
         if inventory_dict.get(product.get_upc()) is None:
             inventory_dict[product.get_upc()] = product
+        for i in invent:
+            # if i.get_upc() == create_inventory_form.upc.data
             db['inventory'] = inventory_dict
+            db['inventoryT'] = inventory_list
             return redirect(url_for('inventory.createNewProduct'))
         else:
             redirect(url_for('inventory.createNewProduct'))
         db.close()
     return render_template('/inventory/productInfo.html', form=create_inventory_form,
-                           create=True, duplicate=duplicate)
+                           create=True)
+    # return render_template('/inventory/productInfo.html', form=create_inventory_form,
+    #                        create=True)
 
 
 @inventory.route("/")
 def retrieve_inventory():
-    print(session["user"]["_User__admin"])
-    if session["user"]["_User__admin"] is False:
-        return render_template("404.html")
+    # print(session["user"]["_User__admin"])
+    # if session.get("user") is None or session["user"]["_User__admin"] is False:
+    #     return render_template("404.html")
     inventory_dict = {}
 
     db = shelve.open('storage.db', 'c')
@@ -73,7 +89,6 @@ def retrieve_inventory():
 def update_product(id):
     update_product_form = UpdateInventoryForm(request.form)
     if request.method == 'POST' and update_product_form.validate():
-        print("I'm Here")
         db = shelve.open('storage.db', 'w')
         inventory_dict = db['inventory']
         product = inventory_dict.get(id)

@@ -14,9 +14,10 @@
         <label for="rememberme" class="rememberme"><input type="checkbox" id="rememberme"> Remember me </label>
         <p class="aa-lost-password"><a href="#">Lost your password?</a></p>
         <div class="aa-register-now">
-          Don't have an account?<a href="/account">Register now!</a>
+          Don't have an account?<a href="{{ url_for("account.index") }}">Register now!</a>
         </div>
       </form>
     </div>
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+</div>
