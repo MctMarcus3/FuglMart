@@ -24,10 +24,6 @@ def add_cart():
         cart_dict[item.get_item_code()] = item
         db['Item'] = cart_dict
 
-        # Test codes
-        cart_dict = db['Item']
-        cart = cart_dict[Item.get_item_code()]
-        print(cart.get_item_code(), cart.get_item_name(), "was stored in storage.db successfully with item_code ==", cart.get_item_amount())
 
         db.close()
 
@@ -44,6 +40,7 @@ def index():
 def retrieve_cart():
     cart_dict = {}
     db = shelve.open('shoppingcart.db', 'r')
+
     try:
         cart_dict = ['Item']
     except:
@@ -56,6 +53,53 @@ def retrieve_cart():
         Item_list.append(Item)
 
     return render_template('retrieveCart.html', count=len(Item_list), Item_list=Item_list)
+
+@shoppingcart.route('/updateCart/<int:id>/', methods=['GET', 'POST'])
+def update_cart(id):
+    update_cart_form = AddshoppingcartForm(request.form)
+    if request.method == 'POST' and update_cart_form.validate():
+        cart_dict = {}
+        db = shelve.open('storage.db', 'w')
+        cart_dict = ['Item']
+
+        Item = cart_dict.get(id)
+        Item.set_item_code(update_cart_form.item_code.data)
+        Item.set_item_name(update_cart_form.item_name)
+        Item.set_item_amount(update_cart_form.item_amount.data)
+        Item.set_receit_number(update_cart_form.receit_number.data)
+        Item.set_item_price(update_cart_form.item_price)
+
+        db['Item'] = cart_dict
+        db.close()
+
+        return redirect(url_for('retrieveCart'))
+    else:
+        cart_dict = {}
+        db = shelve.open('storage.db', 'r')
+        cart_dict = db['Item']
+        db.close()
+
+        item = cart_dict.get(id)
+        update_cart_form.item_code.data = item.get_item_code()
+        update_cart_form.item_name.data = item.get_item_name()
+        update_cart_form.item_amount.data = item.item_amount()
+        update_cart_form.receit_number.data = item.receit_number()
+        update_cart_form.item_price.data = item.item_price()
+
+        return render_template('updateCart.html', form=update_cart_form)
+
+@shoppingcart.route('/deleteCart/<int:id>', methods=['POST'])
+def delete_user(id):
+    cart_dict = {}
+    db = shelve.open('shoppingcart.db', 'w')
+    cart_dict = db['Item']
+
+    cart_dict.pop(id)
+
+    db['Item'] = cart_dict
+    db.close()
+
+    return redirect(url_for('retrieveCart'))
 
 
 

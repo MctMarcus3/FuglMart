@@ -24,6 +24,9 @@ class Item:
     def get_item_price(self):
         return self.__item_price
 
+    def set_item_code(self, item_code):
+        self.__item_code = item_code
+
     def set_item_name(self, item_name):
         self.__item_name = item_name
 
