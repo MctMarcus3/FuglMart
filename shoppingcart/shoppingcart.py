@@ -1,10 +1,11 @@
 class Item:
     item_count = 0
-    def __init__(self, item_name, item_amount, item_price, item_code):
-        item.item_count += 1
+    def __init__(self, item_name, item_amount, item_price, item_code, item_count=0):
+        Item.item_count += 1
+        self.__item_no = Item.item_count
         self.__item_name = item_name
         self.__item_amount = item_amount
-        self.__receit_number = item.item_count
+        self.__receit_number = item_count
         self.__item_price = item_price
         self.__item_code = item_code
 

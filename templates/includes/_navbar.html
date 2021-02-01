@@ -85,7 +85,7 @@
           <!-- Left nav -->
           <ul class="nav navbar-nav">
             <li><a href="index">Home</a></li>
-            <li><a href="/instantfood">Instant Food <span class="caret"></span></a>
+            <li><a href="{{ url_for("product.instantfood") }}">Instant Food <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Noodles</a></li>
                 <li><a href="#">And more.. <span class="caret"></span></a>
@@ -110,7 +110,7 @@
             </li>
             <li><a href="/personalcare">Personal Care</a></li>
             <li><a href="/householdessentials">Household essentials</a></li>
-            <li><a href="/createProduct">Snacks <span class="caret"></span></a>
+            <li><a href={{ url_for("shoppingcart.add_cart")}}>Snacks</span></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Biscuits</a></li>
                 <li><a href="#">Chocolates</a></li>
