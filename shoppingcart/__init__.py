@@ -20,19 +20,19 @@ def add_cart():
         except:
             print("Error in retrieving Cart from shoppingcart.db.")
 
-        cart = Item(add_shopping_cart.item_code.data, add_shopping_cart.item_name.data, add_shopping_cart.item_amount.data, add_shopping_cart.receit_number.data, add_shopping_cart.item_price.data)
-        cart_dict[cart.get_item_code()] = cart
+        item = Item(add_shopping_cart.item_code.data, add_shopping_cart.item_name.data, add_shopping_cart.item_amount.data, add_shopping_cart.receit_number.data, add_shopping_cart.item_price.data)
+        cart_dict[item.get_item_code()] = item
         db['Item'] = cart_dict
 
         # Test codes
         cart_dict = db['Item']
-        cart = cart_dict[cart.get_item_code()]
+        cart = cart_dict[Item.get_item_code()]
         print(cart.get_item_code(), cart.get_item_name(), "was stored in storage.db successfully with item_code ==", cart.get_item_amount())
 
         db.close()
 
 
-        return redirect(url_for('home'))
+        return redirect(url_for('shoppingcart.retrieve_cart'))
     return render_template('addCart.html', form=add_shopping_cart)
 
 
@@ -42,5 +42,24 @@ def index():
 
 @shoppingcart.route('/retrieveCart')
 def retrieve_cart():
+    cart_dict = {}
+    db = shelve.open('shoppingcart.db', 'r')
+    try:
+        cart_dict = ['Item']
+    except:
+        print("Error in retrieving Items from shoppingcart.db.")
+    db.close()
 
-    return render_template('retrieveCart.html')
+    Item_list = []
+    for key in cart_dict:
+        Item = cart_dict.get(key)
+        Item_list.append(Item)
+
+    return render_template('retrieveCart.html', count=len(Item_list), Item_list=Item_list)
+
+
+
+
+
+
+

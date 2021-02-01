@@ -1,10 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Fugl mart-View cart{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<h1 class="display-4">View cart</h1>
+<div>
+  {% if count == 0 %}
+  <p>There are no items in cart.</p>
+  {% elif count == 1 %}
+  <p>There is 1 item.</p>
+  {% else %}
+  <p>There are {{ count }} items.</p>
+  {% endif %}
+</div>
+
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Item code</th>
+        <th>Item name</th>
+        <th>Item amount</th>
+        <th>Receipt number</th>
+        <th>Item price</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for item in Item_list %}
+      <tr>
+        <td>{{ cart.get_item_code() }}</td>
+        <td>{{ cart.get_item_name() }}</td>
+        <td>{{ cart.get_item_amount() }}</td>
+        <td>{{ cart.get_item_receit_number() }}</td>
+        <td>{{ cart.get_item_price() }}</td>
+        {% endif %}
+        <td><a href="#" class="btn btn-warning">Update</a></td>
+        <td>
+          <form action="" method="POST">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+
