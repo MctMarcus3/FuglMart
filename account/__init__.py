@@ -8,8 +8,13 @@ account = Blueprint("account", __name__,
                     template_folder="templates")
 
 
-@account.route('', methods=['POST', 'GET'])
+@account.route('', methods=['GET'])
 def index():
+    create_user_form = CreateUserForm(request.form)
+    return render_template('account.html', form=create_user_form)
+
+@account.route('/create', methods=['POST', 'GET'])
+def create():
     create_user_form = CreateUserForm(request.form)
     if request.method == 'POST' and create_user_form.validate():
         users_dict = {}
@@ -45,9 +50,8 @@ def index():
 
         db.close()
 
-        return redirect(url_for('home'))
-    return render_template('account.html', form=create_user_form)
-
+        return redirect(url_for('account.profile'))
+    return redirect(url_for('account.index'))
 
 @account.route('/login', methods=['POST', 'GET'])
 def login():
@@ -75,8 +79,23 @@ def login():
 
 @account.route('/profile')
 def profile():
+    user_id = session['user_id']
     update_user_form = UserProfile(request.form)
     if request.method == 'POST' and update_user_form.validate():
         return redirect(url_for('account.profile'))
     # update_user_form.title.data = user.get_email()
-    return render_template('profile.html', form=update_user_form)
+    return render_template('profile.html', form=update_user_form, user_id=user_id)
+
+@account.route('/deleteUser/<int:id>', methods=['POST'])
+def delete_user(id):
+    users_dict = {}
+    db = shelve.open('storage.db', 'w')
+    users_dict = db['Users']
+
+    users_dict.pop(id)
+
+    db['Users'] = users_dict
+    db.close()
+
+    return redirect(url_for('account.login'))
+

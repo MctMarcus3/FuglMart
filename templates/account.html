@@ -41,7 +41,7 @@
                       Invalid Password / Username
                   </p>
                   {% endif %}
-                  <input type="submit" class="aa-browse-btn" value="Login">
+                  <input type="submit" class="aa-browse-btn" value="Login" name="login">
                   <label class="rememberme" for="rememberme"><input type="checkbox" id="rememberme"> Remember me </label>
                   <p class="aa-lost-password"><a href="#">Lost your password?</a></p>
                 </form>
@@ -50,7 +50,7 @@
             <div class="col-md-6">
               <div class="aa-myaccount-register">
                <h4>Register</h4>
-               <form action="/account" method="POST" class="aa-login-form">
+               <form action={{url_for('account.create')}} method="POST" class="aa-login-form">
                   <div class="form-group">
                     {{ render_field(form.email, class="form-control") }}
                   </div>
@@ -71,7 +71,7 @@
                       User already registered.
                   </p>
                   {% endif %}
-                  <input type="submit" class="aa-browse-btn" value="Register">
+                  <input type="submit" class="aa-browse-btn" value="Register" name="register">
                 </form>
               </div>
             </div>
