@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, Blueprint, session, jsonify 
 import shelve
-from .Form import CreateUserForm, UserProfile
+from .Form import CreateUserForm, LoginUserForm, UserProfile
 from .User import User
 
 account = Blueprint("account", __name__,
@@ -51,7 +51,7 @@ def index():
 
 @account.route('/login', methods=['POST', 'GET'])
 def login():
-    login_user_form = CreateUserForm(request.form)
+    login_user_form = LoginUserForm(request.form)
     if request.method == 'POST' and login_user_form.validate():
         # Access shelve to retrieve users_dict
         users_dict = {}
