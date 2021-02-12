@@ -9,7 +9,7 @@
         inputStream : {
           name : "Live",
           type : "LiveStream",
-          target: document.querySelector('#camera')    // Or '#yourElement' (optional)
+          target: document.querySelector('#camera')
         },
         decoder : {
           readers : ["code_128_reader"]
@@ -22,13 +22,12 @@
           console.log("Initialization finished. Ready to start");
           Quagga.start();
         });
-        //
         Quagga.onDetected((data) => {
             console.log(data);
             document.querySelector("#upc").value = data.codeResult.code;
             Quagga.stop()
-        });
-    };
+            });
+        };
     </script>
 {% endblock %}
 

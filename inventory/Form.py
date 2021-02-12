@@ -1,4 +1,5 @@
-from wtforms import Form, StringField, DecimalField, IntegerField, validators
+from wtforms import Form, StringField, DecimalField, IntegerField, FileField, validators
+import re
 
 
 class CreateInventoryForm(Form):

@@ -1,16 +1,17 @@
-from flask import Blueprint, render_template, request, url_for, redirect, session
+from flask import Blueprint, render_template, request, url_for, redirect, session, json
 from .Product import Product
 from .Form import CreateInventoryForm, UpdateInventoryForm
 import shelve
+import csv
 
 inventory = Blueprint("inventory", __name__, static_folder="static", template_folder="templates")
 
 # Implement CSV upload, CSV Download, JSON Upload, JSON Download
 # Implement FuzzySearch
 
-# @inventory.route('/upload')
-# def upload_file():
-#     return render_template('upload.html')
+@inventory.route('/upload')
+def upload_file():
+    return render_template('inventory/upload.html')
 #
 #
 # @inventory.route('/uploader', method=['GET', 'POST'])
