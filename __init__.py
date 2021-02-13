@@ -39,17 +39,3 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-@app.route('/deleteUser/<int:id>', methods=['POST'])
-def delete_user(id):
-    users_dict = {}
-    db = shelve.open('storage.db', 'w')
-    users_dict = db['Users']
-
-    users_dict.pop(id)
-
-    db['Users'] = users_dict
-    db.close()
-
-    return redirect(url_for('account'))
-
