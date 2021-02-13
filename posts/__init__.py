@@ -78,7 +78,7 @@ def update_posts(id):
         db['Posts'] = posts_dict
         db.close()
 
-        return redirect(url_for('/Forum/posts.retrieve_posts'))
+        return redirect(url_for('posts.retrieve_posts'))
     else:
         posts_dict = {}
         db = shelve.open('storage.db', 'r')
@@ -88,7 +88,7 @@ def update_posts(id):
         post = posts_dict.get(id)
         update_post_form.title.data = post.get_title()
         update_post_form.content.data = post.get_content()
-        return render_template('/Forum/updatePosts.html', form=update_post_form)
+        return render_template('/forum/updatePosts.html', form=update_post_form)
 
 
 @posts.route('/deletePost/<int:id>', methods=['POST'])
@@ -103,7 +103,7 @@ def delete_post(id):
     db['Posts'] = posts_dict
     db.close()
 
-    return redirect(url_for('/Forum/posts.retrieve_posts'))
+    return redirect(url_for('post.retrieve_posts'))
 
 
 # @posts.route('/createComment', methods=['GET', 'POST'])
@@ -133,5 +133,4 @@ def retrieve_thread(id):
     post = posts_dict.get(id)
     db['Posts'] = posts_dict
     db.close()
-
-    return render_template(url_for('posts.retrieve_thread'))
+    return render_template("forum/retrieveThread.html", post=post)

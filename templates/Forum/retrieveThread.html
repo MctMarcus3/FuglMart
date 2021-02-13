@@ -5,12 +5,12 @@
 <h1 class="display-4">Forum</h1>
 <div class="row">
     <div class="col-lg-3">
-        <a href="/forum/createPost" data-toggle="modal" class="btn btn-primary" title="Add Post">
+        <a href={{ url_for("posts.create_post")}} data-toggle="modal" class="btn btn-primary" title="Add Post">
             <i class="glyphicon glyphicon-plus-sign"></i> Add Post
         </a>
     </div>
 </div>
-{% for post in posts_list %}
+
 <style>
     #forum {
     padding: 15px;
@@ -33,6 +33,5 @@
         </div>
     </div>
 </div>
-    {% endfor %}
 
 {% endblock %}
