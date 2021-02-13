@@ -1,36 +1,5 @@
 {% extends "./base.html" %}
 
-{% block scripts %}
-    {{ super() }}
-    <script type="text/javascript" src="{{url_for('static', filename='js/quagga/dis/quagga.js')}}"></script>
-    <script type="text/javascript">
-    function quaggainit(){
-        Quagga.init({
-        inputStream : {
-          name : "Live",
-          type : "LiveStream",
-          target: document.querySelector('#camera')
-        },
-        decoder : {
-          readers : ["code_128_reader"]
-        }
-        }, function(err) {
-          if (err) {
-              console.log(err);
-              return
-          }
-          console.log("Initialization finished. Ready to start");
-          Quagga.start();
-        });
-        Quagga.onDetected((data) => {
-            console.log(data);
-            document.querySelector("#upc").value = data.codeResult.code;
-            Quagga.stop()
-            });
-        };
-    </script>
-{% endblock %}
-
 {% block content %}
 {% from "./includes/_formHelper.html" import render_field %}
 <a href={{ url_for("inventory.retrieve_inventory")}}/>Return to inventory listings</a>
@@ -63,4 +32,35 @@
 
     <input type="submit" value="Submit" class="btn btn-primary"/>
     </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{url_for('static', filename='js/quagga/dis/quagga.js')}}"></script>
+    <script type="text/javascript">
+    function quaggainit(){
+        Quagga.init({
+        inputStream : {
+          name : "Live",
+          type : "LiveStream",
+          target: document.querySelector('#camera')
+        },
+        decoder : {
+          readers : ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"]
+        }
+        }, function(err) {
+          if (err) {
+              console.log(err);
+              return
+          }
+          console.log("Initialization finished. Ready to start");
+          Quagga.start();
+        });
+        Quagga.onDetected((data) => {
+            console.log(data);
+            document.querySelector("#upc").value = data.codeResult.code;
+            Quagga.stop()
+            });
+        };
+    </script>
 {% endblock %}
