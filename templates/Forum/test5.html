@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Forum - View Posts{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Forum</h1>
+<div class="row">
+    <div class="col-lg-3">
+        <a href="/forum/createPost" data-toggle="modal" class="btn btn-primary" title="Add Post">
+            <i class="glyphicon glyphicon-plus-sign"></i> Create Post
+        </a>
+    </div>
+</div>
+<div>
+  {% if count == 0 %}
+  <p>There are no posts.</p>
+  {% elif count == 1 %}
+  <p>There is 1 post.</p>
+  {% else %}
+  <p>There are {{ count }} posts.</p>
+  {% endif %}
+</div>
+{% for post in posts_list %}
+<style>
+    #forum {
+    padding: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    box-shadow: 0px 0px 13px -3px;
+    }
+
+    .votes {
+    float: right
+    }
+</style>
+<div id = 'forum'>
+    <div class="thread">
+        <div>
+            <p>Posted By: user time of post</p>
+        </div>
+        <div id="title">
+            <h3><a href="/forum/retrieveThread/{{post.get_posts_id()}}">{{ post.get_title() }}</a></h3>
+        </div>
+        <div>
+            <a href="/forum/retrieveComment">Comments</a>
+        </div>
+        <div class = "votes">
+            <p>⬆ 10 ⬇</p>
+        </div>
+    </div>
+</div>
+    {% endfor %}
+
+{% endblock %}

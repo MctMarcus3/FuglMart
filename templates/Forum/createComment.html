@@ -3,15 +3,12 @@
 {% block content %}
 {% from "includes/_formHelper.html" import render_field %}
 
-<h1 class="display-4">Create Post</h1>
+<h1 class="display-4">Create Comment</h1>
 
 <form method="POST" action="">
   <div class="form-group">
-    {{ render_field(form.title, class="form-control") }}
-  <div id="prof">
-    <div class="form-group">
-      {{ render_field(form.content, class="form-control") }}
-    </div>
+    {{ render_field(form.content_Comment, class="form-control") }}
+  </div>
 <input type="submit" value="Submit" class="btn btn-primary"/>
 </form>
 {% endblock content %}
