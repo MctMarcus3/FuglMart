@@ -1,7 +1,7 @@
 class Posts:
     count_id = 0
 
-    def __init__(self, title, content,):
+    def __init__(self, title, content):
         Posts.count_id += 1
         self.__posts_id = Posts.count_id
         self.__title = title
@@ -16,11 +16,23 @@ class Posts:
     def get_content(self):
         return self.__content
 
-    def set_posts_id(self, posts_id):
-        self.__posts_id = posts_id
+    # def set_posts_id(self, posts_id):
+    #     self.__posts_id = posts_id
 
     def set_title(self, title):
         self.__title = title
 
     def set_content(self, content):
         self.__content = content
+
+
+class Comment:
+
+    def __init__(self, comment_content):
+        self.__comment_content = comment_content
+
+    def get_comment_content(self):
+        return self.__comment_content
+
+    def set_comment_content(self, comment_content):
+        self.__comment_content = comment_content
