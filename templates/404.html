@@ -9,7 +9,9 @@
           <h2>404</h2>
           <span>Sorry! Page Not Found</span>
           <p>Sorry this content has been moved and does not exist</p>
-          <a href="/"> Go to Homepage</a>
+          {% block redirect %}
+            <a href="/"> Go to Homepage</a>
+          {% endblock %}
         </div>
       </div>
     </div>

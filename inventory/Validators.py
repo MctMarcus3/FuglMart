@@ -9,15 +9,15 @@ class UPCValidator():
             message = "Invalid Universal Product Code(UPC)"
         self.message = message
 
-    def __call__(self, form, field, message=None):
+    def __call__(self, form, field):
         validlengths = [8, 12, 13, 14, 18]
         if len(field.data) not in validlengths:
-            raise ValidationError(message)
+            raise ValidationError(f"{self.message} (Invalid Length)")
         try:
             lastDigit = int(field.data[-1])  # Get last digit and check if digit is interger
             arr = [int(i) for i in field.data[-2::-1]]  # Convert upc into array
         except ValueError:
-            raise ValidationError(message)
+            raise ValidationError(f"{self.message} (Invalid Characters in UPC)")
         evenTotal = 0
         oddTotal = 0
         for i, v in enumerate(arr):
@@ -27,4 +27,4 @@ class UPCValidator():
                 evenTotal += v
         checkSum = (10 - ((evenTotal + oddTotal) % 10)) % 10
         if checkSum != lastDigit:
-            raise ValidationError(message)
+            raise ValidationError(f"{self.message} (Invalid checksum {checkSum} got {lastDigit})")

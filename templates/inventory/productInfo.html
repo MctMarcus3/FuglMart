@@ -1,37 +1,49 @@
 {% extends "./base.html" %}
 
 {% block content %}
-{% from "./includes/_formHelper.html" import render_field %}
-<a href={{ url_for("inventory.retrieve_inventory")}}/>Return to inventory listings</a>
-<h1 class="display-4">Product Details</h1>
-
-<div id="camera">
-    <video class="videoCamera" autoplay="true" preload="auto" src="" muted="true"
-       playsinline="true"></video>
-    <canvas class="drawingBuffer" style="display: none;"></canvas>
-</div>
-<form method="POST" action="">
-
+    {% from "./includes/_formHelper.html" import render_field %}
+    <a href={{ url_for("inventory.retrieve_inventory")}}/>Return to inventory listings</a>
+    <h1 class="display-4">Product Details</h1>
+    <img id="output" style="width: 100%" />
+    <form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
     <div class="form-group">
-        {{ render_field(form.productName, class="form-control") }}
+        {{ render_field(form.image, class="form-control") }}
+    </div>
+    <div class="form-group">
+    {{ render_field(form.productName, class="form-control") }}
     </div>
     <div class="form-group">
         {{ render_field(form.stock, class="form-control") }}
     </div>
     {% if create %}
-    <div class="form-group">
-        {{ render_field(form.upc, class="form-control") }}
-        <button type="button" class="btn btn-secondary" onclick=quaggainit()>
-        Camera
-        </button >
+    <div id="camera" style="display:None; width:100%">
+        <video class="videoCamera" autoplay="true" preload="auto" src="" muted="true"
+           playsinline="true" style="width:100%"></video>
+        <canvas class="drawingBuffer" style="display: none;"></canvas>
     </div>
     {% endif %}
+    <div class="form-group">
+        {{ render_field(form.upc, class="form-control") }}
+        {% if create %}
+        <button type="button" class="btn btn-secondary" onclick=quaggainit()>
+            Camera
+        </button>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.category, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.company, class="form-control") }}
+    </div>
+
     <div class="form-group">
         {{ render_field(form.price, class="form-control") }}
     </div>
 
     <input type="submit" value="Submit" class="btn btn-primary"/>
-    </form>
+</form>
 {% endblock %}
 
 {% block scripts %}
@@ -39,28 +51,38 @@
     <script type="text/javascript" src="{{url_for('static', filename='js/quagga/dis/quagga.js')}}"></script>
     <script type="text/javascript">
     function quaggainit(){
-        Quagga.init({
-        inputStream : {
-          name : "Live",
-          type : "LiveStream",
-          target: document.querySelector('#camera')
-        },
-        decoder : {
-          readers : ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"]
-        }
-        }, function(err) {
-          if (err) {
-              console.log(err);
-              return
-          }
-          console.log("Initialization finished. Ready to start");
-          Quagga.start();
-        });
-        Quagga.onDetected((data) => {
-            console.log(data);
-            document.querySelector("#upc").value = data.codeResult.code;
-            Quagga.stop()
+        if (document.getElementById("camera").style.display != "block"){
+            document.getElementById("camera").style.display = "block";
+            Quagga.init({
+            inputStream : {
+              name : "Live",
+              type : "LiveStream",
+              target: document.querySelector('#camera')
+            },
+            decoder : {
+              readers : ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"]
+            }
+            }, function(err) {
+              if (err) {
+                  console.log(err);
+                  return
+              }
+              console.log("Initialization finished. Ready to start");
+              Quagga.start();
             });
+            Quagga.onDetected((data) => {
+                console.log(data);
+                document.querySelector("#upc").value = data.codeResult.code;
+                document.getElementById("camera").style.display = "none"
+                Quagga.stop()
+                });
+            };
+        };
+    </script>
+    <script type="text/javascript">
+        var loadFile = function(event) {
+        	var image = document.getElementById('output');
+        	image.src = URL.createObjectURL(event.target.files[0]);
         };
     </script>
 {% endblock %}

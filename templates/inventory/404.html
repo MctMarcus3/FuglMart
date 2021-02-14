@@ -1,0 +1,4 @@
+{% extends "./404.html" %}
+{% block redirect %}
+    <a href={{url_for('inventory.retrieve_inventory')}}> Go to Inventory Management</a>
+{% endblock %}
