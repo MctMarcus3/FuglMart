@@ -33,10 +33,8 @@ def create_post():
             posts_dict = db['Posts']
         except KeyError:
             print("Error in retrieving Users or Posts from storage.db.")
-        print(users_dict)
         user = users_dict.get(session['user_id']).get_username()
-        print(user)
-        print(session['user_id'])
+        session['username'] = user
         post = Post(create_post_form.title.data, create_post_form.content.data, user)
         posts_dict[post.get_id()] = post
         db['Posts'] = posts_dict
@@ -65,9 +63,7 @@ def retrieve_posts():
     # if request.method == 'POST':
     #     search = searchform.search.data
     #     posts_list = [d for d in posts_list if any(search in v for v in d.get_title())]
-    print(posts_list)
-    print([i.get_poster() for i in posts_list])
-    print(posts_list[1].get_poster())
+
     return render_template('/Forum/test5.html', count=len(posts_list), posts_list=posts_list, form=searchform)
 
 
@@ -84,8 +80,6 @@ def update_posts(id):
         post.set_content(update_post_form.content.data)
         db['Posts'] = posts_dict
         db.close()
-
-        session['post_updated'] = post.get_title()
 
         return redirect(url_for('posts.retrieve_posts'))
     else:
@@ -111,8 +105,6 @@ def delete_post(id):
     db['Posts'] = posts_dict
     db.close()
 
-    session['post_deleted'] = post.get_title()
-
     return redirect(url_for('posts.retrieve_posts'))
 
 
@@ -124,33 +116,13 @@ def retrieve_thread(id):
     posts_dict = db['Posts']
     post = posts_dict.get(id)
     if request.method == 'POST' and form.validate():
-        comment = Comment(form.comment.data)
+        comment = Comment(form.comment.data, session['username'])
         post.add_comment(comment)
         db['Posts'] = posts_dict
         return redirect(url_for(f'posts.retrieve_thread', id=id))
     else:
         db.close()
         return render_template("forum/retrieveThread.html", post=post, form=form)
-
-
-@posts.route('/createComment', methods=['GET', 'POST'])
-def create_comment():
-    create_comment_form = CreateCommentForm(request.form)
-    if request.method == 'POST' and create_comment_form.validate():
-        comments_dict = {}
-        db = shelve.open('storage.db', 'c')
-
-        try:
-            comments_dict = db['Comments']
-        except KeyError:
-            print("Error in retrieving comments from storage.db.")
-
-        comment = Comment(create_comment_form.comment.data, create_comment_form.content.data)
-        comments_dict[comment.get_comment_id()] = comment
-        db['comments'] = comments_dict
-        db.close()
-        return redirect(url_for('posts.retrieve_posts'))
-    return render_template('/Forum/createComment.html', form=create_comment_form)
 
 
 @posts.route('/updateComments/<int:id>/', methods=['GET', 'POST'])
@@ -179,17 +151,15 @@ def update_comments(id):
         return render_template('/forum/updateComments.html', form=update_comment_form)
 
 
-@posts.route('/deleteComment/<int:id>', methods=['POST'])
-def delete_comment(id):
-    comments_dict = {}
+@posts.route('/retrieveThread/<int:postid>/deleteComment/<int:commentid>', methods=['POST'])
+def delete_comment(postid, commentid):
+    posts_dict = {}
     db = shelve.open('storage.db', 'w')
-    comments_dict = db['Comments']
+    posts_dict = db['Posts']
 
-    comments_dict.pop(id)
+    posts_dict.pop(id)
 
-    db['Comments'] = comments_dict
+    db['Posts'] = posts_dict
     db.close()
-
-
 
     return redirect(url_for('posts.retrieve_thread'))
