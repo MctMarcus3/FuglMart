@@ -93,7 +93,6 @@ def update_cart(id):
         update_cart_form.item_name.data = item.get_item_code()
         update_cart_form.item_code.data = item.get_item_name()
         update_cart_form.item_amount.data = item.item_amount()
-
         update_cart_form.item_price.data = item.item_price()
 
         return render_template('updateCart.html', form=update_cart_form)
@@ -115,3 +114,7 @@ def remove_item(id):
 @shoppingcart.route('/final')
 def final():
     return render_template('final.html')
+
+@shoppingcart.route('/checkout2')
+def checkout2():
+    return render_template('checkout2.html')
