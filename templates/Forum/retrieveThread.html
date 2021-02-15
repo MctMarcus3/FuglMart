@@ -13,62 +13,69 @@
     </div>
 </div>
 <style>
-    #comment {
-    padding: 15px;
+    .card {
     margin-top: 20px;
     margin-bottom: 20px;
-    font-size: 12px;
+    font-size: 14px;
     box-shadow: 0px 0px 13px -3px;
     }
-    #forum {
+    .card-header {
     padding: 15px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    border: 1px solid black;
+    background-color: #f2f2f2;
+    background-clip:padding-box;
+    display:flex;
+    align-items:left;
+    flex-direction: row;
+    }
+    .btn {
+    display:flex;
+    align-items:right;
+    flex-direction: row;
+    }
+    .card-body{
+    padding: 15px;
     }
 </style>
-<div id = 'forum'>
-    <div class="thread">
-        <div>
-            <p>Posted By: user time of post</p>
-        </div>
-        <div id="title">
-            <h3>{{ post.get_title() }}</h3>
-        </div>
-        <div class="content">
-            <p>{{ post.get_content() }}</p>
+<div class = 'card'>
+    <div class="card-header">
+        <p>Posted By: user time of post</p>
+    </div>
+    <div class="card-body">
+        <h3>{{ post.get_title() }}</h3>
+        <p>{{ post.get_content() }}</p>
+        <div class = "btn">
+        <a href="/forum/updatePosts/{{post.get_id()}}" class="btn btn-warning">Update</a>
+        <form action="{{url_for('posts.delete_post', id=post.get_id())}}" method="POST">
+            <input type="submit" value="Delete" class="btn btn-danger">
+        </form>
         </div>
     </div>
 </div>
 <div>
-    <div class="col-lg-3">
-    <!-- <a href={{ url_for("posts.create_comment") }} data-toggle="modal" class="btn btn-primary" title="Add Comment">
-    <i class="glyphicon glyphicon-plus-sign"></i> Add Comment</a> -->
     <form method="POST" action=''>
       <div class="form-group">
         {{ render_field(form.comment, class="form-control") }}
       </div>
     <input type="submit" value="Submit" class="btn btn-primary"/>
-    </div>
+    </form>
 </div>
-<a href="/forum/retrieveComment">Comments</a>
+<h3>Comments</h3>
 {% for comment in post.get_comments() %}
-<div id = 'comment'>
-    <div class="thread">
-        <div>
-            <p>Posted By: user time of post</p>
-        </div>
-        <div class="comment">
-            <p>{{ comment.get_content() }}</p>
-        </div>
-    </div>
-    <div class="media">
-        <div class="media-left">
-            <img class="media-object news-img" src="img/testimonial-img-2.jpg" alt="img">
+<div class="card">
+  <div class="card-header">
+      <p>Posted By: user time of post</p>
+  </div>
+    <div class="card-body">
+        <p>{{ comment.get_content() }}</p>
+        <div class = "btn">
+        <a href="/forum/updateComments/{{comment.get_id()}}" class="btn btn-warning">Update</a>
+        <form action="{{url_for('posts.delete_comment', id=comment.get_id())}}" method="POST">
+            <input type="submit" value="Delete" class="btn btn-danger">
+        </form>
         </div>
     </div>
 </div>
+
 {% endfor %}
 
 {% endblock %}

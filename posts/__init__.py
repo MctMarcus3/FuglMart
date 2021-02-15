@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from .Form import CreatePostForm, CreateCommentForm
+from flask import Blueprint, render_template, request, redirect, url_for, session
+from .Form import CreatePostForm, CreateCommentForm, SearchForm
 from .Post import Post, Comment
 import shelve
 
@@ -22,10 +22,14 @@ def create_post():
         posts_dict[post.get_id()] = post
         db['Posts'] = posts_dict
         db.close()
+
+        session['post_created'] = post.get_title()
+
         return redirect(url_for('posts.retrieve_posts'))
     return render_template('/Forum/createPost.html', form=create_post_form)
 
-@posts.route('/retrievePosts')
+
+@posts.route('/retrievePosts', methods=['POST', 'GET'])
 def retrieve_posts():
     posts_dict = {}
     db = shelve.open('storage.db', 'r')
@@ -40,7 +44,12 @@ def retrieve_posts():
         posts = posts_dict.get(key)
         posts_list.append(posts)
         print(key, posts)
-    return render_template('/Forum/test5.html', count=len(posts_list), posts_list=posts_list)
+    searchform = SearchForm(request.form)
+    if request.method == 'POST':
+        search = searchform.search.data
+        posts_list = [d for d in posts_list if any(search in v for v in d.get_title())]
+
+    return render_template('/Forum/test5.html', count=len(posts_list), posts_list=posts_list, form=searchform)
 
 
 @posts.route('/updatePosts/<int:id>/', methods=['GET', 'POST'])
@@ -56,6 +65,8 @@ def update_posts(id):
         post.set_content(update_post_form.content.data)
         db['Posts'] = posts_dict
         db.close()
+
+        session['post_updated'] = post.get_title()
 
         return redirect(url_for('posts.retrieve_posts'))
     else:
@@ -80,6 +91,8 @@ def delete_post(id):
 
     db['Posts'] = posts_dict
     db.close()
+
+    session['post_deleted'] = post.get_title()
 
     return redirect(url_for('posts.retrieve_posts'))
 
@@ -120,16 +133,44 @@ def create_comment():
         return redirect(url_for('posts.retrieve_posts'))
     return render_template('/Forum/createComment.html', form=create_comment_form)
 
-    # comments_dict = {}
-    # db = shelve.open('storage.db', 'r')
-    # try:
-    #     comments_dict = db['Comments']
-    # except KeyError:
-    #     print("Error in retrieving Comments from storage.db.")
-    # db.close()
-    #
-    # comments_list = []
-    # for key in comments_dict:
-    #     comments = comments_dict.get(key)
-    #     comments_list.append(comments)
-    # return render_template('/Forum/retrieveComment.html', count=len(comments_list), comments_list=comments_list)
+
+@posts.route('/updateComments/<int:id>/', methods=['GET', 'POST'])
+def update_comments(id):
+    update_comment_form = CreateCommentForm(request.form)
+    if request.method == 'POST' and update_comment_form.validate():
+        comments_dict = {}
+        db = shelve.open('storage.db', 'w')
+        comments_dict = db['comments']
+
+        comment = comments_dict.get(id)
+        comment.set_comment(update_comment_form.comment.data)
+        comment.set_content(update_comment_form.content.data)
+        db['Comments'] = comments_dict
+        db.close()
+
+        return redirect(url_for('posts.retrieve_thread'))
+    else:
+        comments_dict = {}
+        db = shelve.open('storage.db', 'r')
+        comments_dict = db['Comments']
+        db.close()
+
+        comment = comments_dict.get(id)
+        update_comment_form.comment.data = comment.get_comments()
+        return render_template('/forum/updateComments.html', form=update_comment_form)
+
+
+@posts.route('/deleteComment/<int:id>', methods=['POST'])
+def delete_comment(id):
+    comments_dict = {}
+    db = shelve.open('storage.db', 'w')
+    comments_dict = db['Comments']
+
+    comments_dict.pop(id)
+
+    db['Comments'] = comments_dict
+    db.close()
+
+
+
+    return redirect(url_for('posts.retrieve_thread'))

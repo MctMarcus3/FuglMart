@@ -8,3 +8,7 @@ class CreatePostForm(Form):
 
 class CreateCommentForm(Form):
     comment = TextAreaField('Add Comment', [validators.InputRequired()])
+
+
+class SearchForm(Form):
+    search = StringField('Search', [validators.InputRequired()])
