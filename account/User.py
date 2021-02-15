@@ -8,12 +8,19 @@ class User:
         self.__admin = admin
         self.__class__.count += 1
         self.__accountId = self.__class__.count
+        self.__username = ""
 
     def set_email(self, email):
         self.__email = email
 
     def get_email(self):
         return self.__email
+
+    def get_username(self):
+        return self.__username
+
+    def set_username(self, username):
+        self.__username = username
 
     def set_password(self, password):
         self.__password = password

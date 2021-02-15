@@ -1,14 +1,17 @@
 class Comment:
     count_id = 0
 
-    def __init__(self, content):
+    def __init__(self, content, poster):
         Comment.count_id += 1
         self.__id = Comment.count_id
         self.__content = content
-        self.__user = ''
+        self.__poster = poster
 
     def get_id(self):
         return self.__id
+
+    def get_poster(self):
+        return self.__poster
 
     def get_content(self):
         return self.__content
@@ -18,10 +21,10 @@ class Comment:
 
 
 class Post(Comment):
-    def __init__(self, title, content):
+    def __init__(self, title, content, poster):
         self.__title = title
         self.__comments = []
-        super().__init__(content)
+        super().__init__(content, poster)
 
     def get_title(self):
         return self.__title

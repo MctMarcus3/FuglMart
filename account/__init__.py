@@ -82,7 +82,16 @@ def login():
 def profile():
     user_id = session['user_id']
     update_user_form = UserProfile(request.form)
+    users_dict = {}
+    db = shelve.open('storage.db', 'c')
+
+    try:
+        users_dict = db['Users']
+    except KeyError:
+        print("Error in retrieving Users from storage.db.")
+    user = users_dict.get(session['user_id'])
     if request.method == 'POST' and update_user_form.validate():
+        user.set_username(update_user_form.username.data)
         return redirect(url_for('account.profile'))
     # update_user_form.title.data = user.get_email()
     return render_template('profile.html', form=update_user_form, user_id=user_id)

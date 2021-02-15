@@ -11,19 +11,20 @@ def create_post():
     create_post_form = CreatePostForm(request.form)
     if request.method == 'POST' and create_post_form.validate():
         posts_dict = {}
+        users_dict = {}
         db = shelve.open('storage.db', 'c')
 
         try:
+            users_dict = db['Users']
             posts_dict = db['Posts']
-        except:
-            print("Error in retrieving Posts from storage.db.")
+        except KeyError:
+            print("Error in retrieving Users or Posts from storage.db.")
+        user = users_dict.get(session['user_id']).get_username()
 
-        post = Post(create_post_form.title.data, create_post_form.content.data)
+        post = Post(create_post_form.title.data, create_post_form.content.data, user)
         posts_dict[post.get_id()] = post
         db['Posts'] = posts_dict
         db.close()
-
-        session['post_created'] = post.get_title()
 
         return redirect(url_for('posts.retrieve_posts'))
     return render_template('/Forum/createPost.html', form=create_post_form)
