@@ -141,7 +141,7 @@
             <li><a href="#">Pages <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href={{ url_for("shoppingcart.retrieve_cart") }}>Cart</a></li>
-                <li><a href="/product-detail">Add cart - product</a></li>
+                <li><a href={{ url_for("shoppingcart.add_product") }}>Add cart - product</a></li>
                 <li><a href="/404">404 Page</a></li>
                 <li><a href={{ url_for("shoppingcart.add_cart") }}>Add cart(Manual)</a></li>
                 <li><a href={{ url_for("inventory.retrieve_inventory") }}>Inventory</a></li>

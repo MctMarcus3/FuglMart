@@ -59,6 +59,9 @@ def retrieve_cart():
     print(Item_list)
     return render_template('retrieveCart.html', count=len(Item_list), Item_list=Item_list)
 
+@shoppingcart.route('/addproduct')
+def add_product():
+    return render_template('addproduct.html')
 
 @shoppingcart.route('/updateCart/<int:id>/', methods=['GET', 'POST'])
 def update_cart(id):
@@ -69,11 +72,11 @@ def update_cart(id):
         cart_dict = db['Item']
 
         Item = cart_dict.get(id)
-        Item.set_item_code(update_cart_form.item_code.data)
-        Item.set_item_name(update_cart_form.item_name)
+        Item.set_item_name(update_cart_form.item_code.data)
+        Item.set_item_code(update_cart_form.item_name.data)
         Item.set_item_amount(update_cart_form.item_amount.data)
         Item.set_receipt_number(update_cart_form.receipt_number.data)
-        Item.set_item_price(update_cart_form.item_price)
+        Item.set_item_price(update_cart_form.item_price.data)
 
         db['Item'] = cart_dict
         db.close()
@@ -86,8 +89,8 @@ def update_cart(id):
         db.close()
 
         item = cart_dict.get(id)
-        update_cart_form.item_code.data = item.get_item_code()
-        update_cart_form.item_name.data = item.get_item_name()
+        update_cart_form.item_name.data = item.get_item_code()
+        update_cart_form.item_code.data = item.get_item_name()
         update_cart_form.item_amount.data = item.item_amount()
         update_cart_form.receipt_number.data = item.receipt_number()
         update_cart_form.item_price.data = item.item_price()
