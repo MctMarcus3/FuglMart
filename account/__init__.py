@@ -40,7 +40,6 @@ def create():
         db['Users'] = users_dict
         db["UsersCount"] = User.count
         session['user_id'] = user.get_accountId()
-        session['user'] = user.__dict__
         # Test codes
         users_dict = db['Users']
         user = users_dict[user.get_accountId()]
@@ -70,7 +69,6 @@ def login():
                 if user.get_password() == login_user_form.password.data:
                     print(user.__dict__)
                     session['user_id'] = user.get_accountId()
-                    session['user'] = user.__dict__
                     return redirect(url_for('account.profile'))
         # Check if email and password matches with database
         return render_template('account.html', error=True, form=login_user_form)
@@ -99,3 +97,7 @@ def delete_user(id):
 
     return redirect(url_for('account.login'))
 
+@account.route('/logout')
+def logout():
+    session['user_id'] = None
+    return redirect(url_for("home"))
