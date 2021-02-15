@@ -26,7 +26,7 @@
                 <li><a href={{ url_for("account.logout") }}>Logout</a></li>
                 {% endif %}
                 {% if not session['user_id'] %}
-                <li><a href={{ url_for("account.index") }}>Login</a></li>
+                <li><a href={{ url_for("account.index") }}>Login/Sign Up</a></li>
                 {% endif %}
               </ul>
             </div>
