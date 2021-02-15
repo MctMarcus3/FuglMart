@@ -17,15 +17,17 @@ def add_cart():
         cart_dict = {}
         db = shelve.open('storage.db', 'c')
 
+
         try:
             cart_dict = db['Item']
         except:
             print("Error in retrieving Cart from shoppingcart.db.")
 
+        Item.item_count += 1
         item = Item(add_shopping_cart.item_code.data, add_shopping_cart.item_name.data,
-                    add_shopping_cart.item_amount.data, add_shopping_cart.receipt_number.data,
+                    add_shopping_cart.item_amount.data,
                     add_shopping_cart.item_price.data)
-        cart_dict[item.get_item_code()] = item
+        cart_dict[item.get_item_name()] = item
         db['Item'] = cart_dict
 
         db.close()
@@ -75,7 +77,6 @@ def update_cart(id):
         Item.set_item_name(update_cart_form.item_code.data)
         Item.set_item_code(update_cart_form.item_name.data)
         Item.set_item_amount(update_cart_form.item_amount.data)
-        Item.set_receipt_number(update_cart_form.receipt_number.data)
         Item.set_item_price(update_cart_form.item_price.data)
 
         db['Item'] = cart_dict
@@ -92,7 +93,7 @@ def update_cart(id):
         update_cart_form.item_name.data = item.get_item_code()
         update_cart_form.item_code.data = item.get_item_name()
         update_cart_form.item_amount.data = item.item_amount()
-        update_cart_form.receipt_number.data = item.receipt_number()
+
         update_cart_form.item_price.data = item.item_price()
 
         return render_template('updateCart.html', form=update_cart_form)
@@ -110,3 +111,7 @@ def remove_item(id):
     db.close()
 
     return redirect(url_for('shoppingcart.retrieveCart'))
+
+@shoppingcart.route('/final')
+def final():
+    return render_template('final.html')

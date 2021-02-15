@@ -11,6 +11,7 @@
   {% else %}
   <p>There are {{ count }} items.</p>
   {% endif %}
+
 </div>
 
 <div>
@@ -20,7 +21,7 @@
         <th>Item code</th>
         <th>Item name</th>
         <th>Item amount</th>
-        <th>Receipt number</th>
+
         <th>Item price</th>
         <th></th>
         <th></th>
@@ -32,7 +33,7 @@
         <td>{{ item.get_item_code() }}</td>
         <td>{{ item.get_item_name() }}</td>
         <td>{{ item.get_item_amount() }}</td>
-        <td>{{ item.get_receipt_number() }}</td>
+
         <td>{{ item.get_item_price() }}</td>
         <td><a href="shoppingcart.updatecart" class="btn btn-warning">Update</a></td>
         <td>

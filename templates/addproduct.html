@@ -1,39 +1,42 @@
 {% extends "base.html" %}
-
-
-<div>
-  <table class="table table-striped">
+{% block content %}
+<!-- 404 error section -->
+ <table class="table table-striped">
     <thead>
       <tr>
         <th>Item code</th>
         <th>Item name</th>
         <th>Item amount</th>
-        <th>Receipt number</th>
+
         <th>Item price</th>
         <th></th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-    {% for item in Item_list %}
       <tr>
-        <td>{{ item.get_item_code() }}</td>
-        <td>{{ item.get_item_name() }}</td>
-        <td>{{ item.get_item_amount() }}</td>
-        <td>{{ item.get_receipt_number() }}</td>
-        <td>{{ item.get_item_price() }}</td>
-        <td><a href="shoppingcart.updatecart" class="btn btn-warning">Update</a></td>
-        <td>
-          <form action="{{url_for('shoppingcart.remove_item', id=item.get_item_code())}}"  method="POST">
-            <input type="submit" value="Delete" class="btn btn-danger">
-          </form>
-        </td>
-        {% endfor %}
+        <th>321321</th>
+        <th>Apples</th>
+        <th>1</th>
+        <th>$3.90</th>
+        <th><a href="/checkout" class="aa-cart-view-btn">+</a></th>
       </tr>
-    </tbody>
-  </table>
-</div>
+      <tr>
+        <th>321321</th>
+        <th>Bannanas</th>
+        <th>3</th>
+        <th>$5.90</th>
+        <th><a href="/checkout" class="aa-cart-view-btn">+</a></th>
+      </tr>
+      <tr>
+        <th>657644</th>
+        <th>Oranges</th>
+        <th>1</th>
+        <th>$1.90</th>
+        <th><a href="/checkout" class="aa-cart-view-btn">+</a></th>
+      </tr>
 
-
+<!-- / 404 error section -->
+{% endblock %}
 
 
