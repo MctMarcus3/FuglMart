@@ -1,5 +1,9 @@
 {% extends "./base.html" %}
 
+{% block header %}
+    {{ super() }}
+{% endblock %}
+<link src={{url_for('statc', filename='css/cropper/cropper.css')}} rel="stylesheet"/>
 {% block content %}
     {% from "./includes/_formHelper.html" import render_field %}
     <a href={{ url_for("inventory.retrieve_inventory")}}/>Return to inventory listings</a>
@@ -42,13 +46,25 @@
         {{ render_field(form.price, class="form-control") }}
     </div>
 
+    <hr />
+    <h3>Discounts</h3>
+    <div class="form-group">
+        {{ render_field(form.oldprice, class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ render_field(form.badge, class="form-control") }}
+    </div>
+
     <input type="submit" value="Submit" class="btn btn-primary"/>
+
 </form>
 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
     <script type="text/javascript" src="{{url_for('static', filename='js/quagga/dis/quagga.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/cropper/cropper.js')}}"></script>
     <script type="text/javascript">
     function quaggainit(){
         if (document.getElementById("camera").style.display != "block"){

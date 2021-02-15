@@ -5,12 +5,12 @@ from flask import (
 from functools import wraps
 from .Product import Product
 from .Form import InventoryForm, CreateInventoryForm
-
 import shelve
 import os
 from PIL import Image
 import csv
 import json
+
 
 # Wrapper function to test if user is Admin
 def Restricted(func):
@@ -51,7 +51,7 @@ def retrieve_inventory():
         product = inventory_dict.get(key)
         inventory_list.append(product)
 
-    return render_template('/inventory/retrieveInventory.html', count=len(inventory_list),
+    return render_template('/inventory/retrieveInventoryNew.html', count=len(inventory_list),
                            inventory_list=inventory_list)
 
 
@@ -72,6 +72,12 @@ def createNewProduct():
                           create_inventory_form.company.data,
                           create_inventory_form.category.data,
                           create_inventory_form.price.data)
+        if create_inventory_form.oldprice.data:
+            product.set_oldprice(create_inventory_form.oldprice.data)
+        if create_inventory_form.badge.data:
+            if create_inventory_form.stock.data == '0':
+                product.set_badge = 'soldout'
+            product.set_badge(create_inventory_form.badge.data)
         if inventory_dict.get(product.get_upc()) is None:
             f = Image.open(create_inventory_form.image.data)
             f = f.convert("RGB")
@@ -98,7 +104,7 @@ def createNewProduct():
 @inventory.route('updateproduct/<string:id>', methods=['GET', 'POST'])
 @Restricted
 def update_product(id):
-    update_product_form = InventoryForm(request.form)
+    update_product_form = InventoryForm()
     if request.method == 'POST' and update_product_form.validate_on_submit():
         db = shelve.open('storage.db', 'w')
         inventory_dict = db['inventory']
