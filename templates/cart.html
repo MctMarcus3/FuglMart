@@ -1,7 +1,7 @@
 {% extends "base.html" %}
+{% block title %}Fugl mart-View cart{% endblock %}
 
 {% block content %}
-<h1>Cart</h1>
 <h1 class="display-4">View cart</h1>
 <div>
   {% if count == 0 %}
@@ -36,7 +36,7 @@
         <td>{{ item.get_item_price() }}</td>
         <td><a href="shoppingcart.updatecart" class="btn btn-warning">Update</a></td>
         <td>
-          <form action="{{url_for('remove_item', id=item.get_item_code())}}"  method="POST">
+          <form action="{{url_for('shoppingcart.remove_item', id=item.get_item_code())}}"  method="POST">
             <input type="submit" value="Delete" class="btn btn-danger">
           </form>
         </td>
@@ -45,7 +45,7 @@
     </tbody>
   </table>
 </div>
-
+{% endblock %}
              <!-- Cart Total view -->
              <div class="cart-view-total">
                <h4>Cart Totals</h4>
@@ -56,4 +56,4 @@
              </div>
 
  <!-- / Cart view section -->
-{% endblock %}
+
