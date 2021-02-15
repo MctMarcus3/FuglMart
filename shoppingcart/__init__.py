@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, url_for, redirect, session, app
+from functools import wraps
+
 from .shoppingcart import Item
 import shelve
 from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators
@@ -8,7 +10,17 @@ shoppingcart = Blueprint("shoppingcart",
                          __name__,
                          static_folder="static",
                          template_folder="templates")
+def login_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        db = shelve.open('storage.db', 'c')
+        if session.get("user_id") is None or db.get('Users') is None:
+            return redirect(url_for('account.index'))
 
+        db.close()
+        val = func(*args, **kwargs)
+        return val
+    return wrapper
 
 @shoppingcart.route('/addshoppingcart', methods=['GET', 'POST'])
 def add_cart():
@@ -112,6 +124,7 @@ def remove_item(id):
     return redirect(url_for('shoppingcart.retrieveCart'))
 
 @shoppingcart.route('/final')
+@login_required
 def final():
     return render_template('final.html')
 

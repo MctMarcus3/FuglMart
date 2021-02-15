@@ -35,7 +35,7 @@
         <td>{{ item.get_item_amount() }}</td>
 
         <td>{{ item.get_item_price() }}</td>
-        <td><a href="shoppingcart.updatecart" class="btn btn-warning">Update</a></td>
+        <td><a href="shoppingcart.updatecart" class="btn btn-warning">Add</a></td>
         <td>
           <form action="{{url_for('shoppingcart.remove_item', id=item.get_item_code())}}"  method="POST">
             <input type="submit" value="Delete" class="btn btn-danger">
