@@ -5,13 +5,15 @@
 {% from "includes/_formHelper.html" import render_field %}
 
 <h1 class="display-4">Forum</h1>
+{% if session['user_id'] == post.get_poster_id() %}
 <div class="row">
     <div class="col-lg-3">
-        <a href={{ url_for("posts.create_post") }} data-toggle="modal" class="btn btn-primary" title="Add Post">
+        <a href="/forum/createPost" data-toggle="modal" class="btn btn-primary" title="Add Comment">
             <i class="glyphicon glyphicon-plus-sign"></i> Add Post
         </a>
     </div>
 </div>
+{% endif %}
 <style>
     .card {
     margin-top: 20px;
@@ -38,20 +40,23 @@
 </style>
 <div class = 'card'>
     <div class="card-header">
-        <p>Posted By: {{ post.get_poster() }}</p>
+        <p>Posted By: {% if post.get_poster() is not none %}{{ post.get_poster() }}{% endif %}</p>
     </div>
     <div class="card-body">
         <h3>{{ post.get_title() }}</h3>
         <p>{{ post.get_content() }}</p>
+        {% if session['user_id'] == post.get_poster_id() %}
         <div class = "btn">
-        <a href="/forum/updatePosts/{{post.get_id()}}" class="btn btn-warning">Update</a>
+        <a href={{url_for('posts.update_posts', id=post.get_id())}} class="btn btn-warning">Update</a>
         <form action="{{url_for('posts.delete_post', id=post.get_id())}}" method="POST">
             <input type="submit" value="Delete" class="btn btn-danger">
         </form>
         </div>
+        {% endif %}
     </div>
 </div>
 <div>
+    {% if session['user_id'] is not none %}
     <form method="POST" action=''>
       <div class="form-group">
         {{ render_field(form.comment, class="form-control") }}
@@ -59,20 +64,23 @@
     <input type="submit" value="Submit" class="btn btn-primary"/>
     </form>
 </div>
+{% endif %}
 <h3>Comments</h3>
 {% for comment in post.get_comments() %}
 <div class="card">
   <div class="card-header">
-      <p>Posted By: {{ post.get_poster() }}</p>
+      <p>Posted By: {% if comment.get_poster() is not none %}{{ comment.get_poster() }}{% endif %}</p>
   </div>
     <div class="card-body">
         <p>{{ comment.get_content() }}</p>
+        {% if session['user_id'] == comment.get_poster_id() %}
         <div class = "btn">
-        <a href="/forum/updateComments/{{comment.get_id()}}" class="btn btn-warning">Update</a>
+        <a href={{url_for('posts.update_comment', postid=post.get_id(), commentid=comment.get_id())}} class="btn btn-warning">Update</a>
         <form action="{{url_for('posts.delete_comment', postid=post.get_id(), commentid=comment.get_id())}}" method="POST">
             <input type="submit" value="Delete" class="btn btn-danger">
         </form>
         </div>
+        {% endif %}
     </div>
 </div>
 

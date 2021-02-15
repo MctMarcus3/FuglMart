@@ -90,6 +90,7 @@ def profile():
         print("Error in retrieving Users from storage.db.")
     user = users_dict.get(user_id)
     if request.method == 'POST' and update_user_form.validate():
+        session['username'] = update_user_form.username.data
         user.set_username(update_user_form.username.data)
         users_dict[user_id] = user
         db['Users'] = users_dict
