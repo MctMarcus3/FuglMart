@@ -8,7 +8,11 @@
     {% from "./includes/_formHelper.html" import render_field %}
     <a href={{ url_for("inventory.retrieve_inventory")}}/>Return to inventory listings</a>
     <h1 class="display-4">Product Details</h1>
-    <img id="output" style="width: 100%" />
+    <img id="output" style="width: 100%"
+        {% if not create %}
+            src={{ url_for("inventory.image", id=form.upc.data)}}
+        {% endif %}
+    />
     <form method="POST" action="" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div class="form-group">
@@ -35,6 +39,7 @@
         </button>
         {% endif %}
     </div>
+    <svg id="barcode"></svg>
     <div class="form-group">
         {{ render_field(form.category, class="form-control") }}
     </div>
@@ -64,7 +69,8 @@
 {% block scripts %}
     {{ super() }}
     <script type="text/javascript" src="{{url_for('static', filename='js/quagga/dis/quagga.js')}}"></script>
-    <script type="text/javascript" src="{{url_for('static', filename='js/cropper/cropper.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/cropper/cropper.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/jsBarcode/jsBarcode.all.min.js')}}"></script>
     <script type="text/javascript">
     function quaggainit(){
         if (document.getElementById("camera").style.display != "block"){
@@ -90,6 +96,10 @@
                 console.log(data);
                 document.querySelector("#upc").value = data.codeResult.code;
                 document.getElementById("camera").style.display = "none"
+                JsBarcode("#barcode",  data.codeResult.code, {
+                    format: "EAN13",
+                    height: 40,
+                })
                 Quagga.stop()
                 });
             };
@@ -100,5 +110,10 @@
         	var image = document.getElementById('output');
         	image.src = URL.createObjectURL(event.target.files[0]);
         };
+        var upc = document.getElementById('upc')
+        JsBarcode("#barcode", upc.value, {
+            format: "EAN13",
+            height: 40,
+        })
     </script>
 {% endblock %}
