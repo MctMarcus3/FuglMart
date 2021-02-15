@@ -38,6 +38,10 @@ def add_cart():
 def index():
     return render_template('product.html')
 
+@shoppingcart.route("/cart")
+def cart():
+    return render_template('cart.html')
+
 
 @shoppingcart.route('/retrieveCart')
 def retrieve_cart():
