@@ -13,22 +13,6 @@
              <div class="col-md-8">
                <div class="checkout-left">
                  <div class="panel-group" id="accordion">
-                   <!-- Coupon section -->
-                   <div class="panel panel-default aa-checkout-coupon">
-                     <div class="panel-heading">
-                       <h4 class="panel-title">
-                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                           Have a Coupon?
-                         </a>
-                       </h4>
-                     </div>
-                     <div id="collapseOne" class="panel-collapse collapse in">
-                       <div class="panel-body">
-                         <input type="text" placeholder="Coupon Code" class="aa-coupon-code">
-                         <input type="submit" value="Apply Coupon" class="aa-browse-btn">
-                       </div>
-                     </div>
-                   </div>
                    <!-- Login section -->
                    <div class="panel panel-default aa-checkout-login">
                      <div class="panel-heading">
@@ -40,7 +24,7 @@
                      </div>
                      <div id="collapseTwo" class="panel-collapse collapse">
                        <div class="panel-body">
-                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat voluptatibus modi pariatur qui reprehenderit asperiores fugiat deleniti praesentium enim incidunt.</p>
+                         <p>Please login to continue with your purchase!</p>
                          <input type="text" placeholder="Username or email">
                          <input type="password" placeholder="Password">
                          <button type="submit" class="aa-browse-btn">Login</button>
@@ -263,49 +247,52 @@
              </div>
              <div class="col-md-4">
                <div class="checkout-right">
-                 <h4>Order Summary</h4>
-                 <div class="aa-order-summary-area">
-                   <table class="table table-responsive">
-                     <thead>
-                       <tr>
-                         <th>Product</th>
-                         <th>Total</th>
-                       </tr>
-                     </thead>
-                     <tbody>
-                       <tr>
-                         <td>T-Shirt <strong> x  1</strong></td>
-                         <td>$150</td>
-                       </tr>
-                       <tr>
-                         <td>Polo T-Shirt <strong> x  1</strong></td>
-                         <td>$250</td>
-                       </tr>
-                       <tr>
-                         <td>Shoes <strong> x  1</strong></td>
-                         <td>$350</td>
-                       </tr>
-                     </tbody>
-                     <tfoot>
-                       <tr>
-                         <th>Subtotal</th>
-                         <td>$750</td>
-                       </tr>
-                        <tr>
-                         <th>Tax</th>
-                         <td>$35</td>
-                       </tr>
-                        <tr>
-                         <th>Total</th>
-                         <td>$785</td>
-                       </tr>
-                     </tfoot>
-                   </table>
-                 </div>
+                 <h1 class="display-4">View cart</h1>
+<div>
+  {% if count == 0 %}
+  <p>There are no items in cart.</p>
+  {% elif count == 1 %}
+  <p>There is 1 item.</p>
+  {% else %}
+  <p>There are {{ count }} items.</p>
+  {% endif %}
+</div>
+
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Item code</th>
+        <th>Item name</th>
+        <th>Item amount</th>
+        <th>Receipt number</th>
+        <th>Item price</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for item in Item_list %}
+      <tr>
+        <td>{{ item.get_item_code() }}</td>
+        <td>{{ item.get_item_name() }}</td>
+        <td>{{ item.get_item_amount() }}</td>
+        <td>{{ item.get_receipt_number() }}</td>
+        <td>{{ item.get_item_price() }}</td>
+        <td><a href="shoppingcart.updatecart" class="btn btn-warning">Update</a></td>
+        <td>
+          <form action="{{url_for('remove_item', id=item.get_item_code())}}"  method="POST">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+</div>
                  <h4>Payment Method</h4>
                  <div class="aa-payment-method">
-                   <label for="cashdelivery"><input type="radio" id="cashdelivery" name="optionsRadios"> Cash on Delivery </label>
-                   <label for="paypal"><input type="radio" id="paypal" name="optionsRadios" checked> Via Paypal </label>
+                   <label for="paypal"><input type="radio" id="paypal" name="optionsRadios" checked> Via Paypal/Credit card</label>
                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg" border="0" alt="PayPal Acceptance Mark">
                    <input type="submit" value="Place Order" class="aa-browse-btn">
                  </div>

@@ -102,10 +102,10 @@
                 </li>
               </ul>
             </li>
-            <li><a href="/staples">Staples </a>
+            <li><a href="{{ url_for("product.staples") }}">Staples </a>
 
             </li>
-            <li><a href="/drinks">Drinks<span class="caret"></span></a>
+            <li><a href="{{ url_for("product.drinks") }}">Drinks<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Soft drinks</a></li>
                 <li><a href="#">Wine, Beer and spirits</a></li>
@@ -113,11 +113,11 @@
                 </li>
               </ul>
             </li>
-            <li><a href="/personalcare">Personal Care</a></li>
-            <li><a href="/householdessentials">Household essentials</a></li>
-            <li><a href={{ url_for("shoppingcart.add_cart")}}>Snacks</span></a>
+            <li><a href="{{ url_for("product.personalcare") }}">Personal Care</a></li>
+            <li><a href="{{ url_for("product.householdessentials") }}">Household essentials</a></li>
+            <li><a href={{ url_for("product.snacks")}}>Snacks</span></a>
               <ul class="dropdown-menu">
-                <li><a href={{ url_for("shoppingcart.retrieve_cart") }}>View cart</a></li>
+                <li><a href={{ url_for("shoppingcart.retrieve_cart") }}>Biscuits</a></li>
                 <li><a href="#">Chocolates</a></li>
                 <li><a href="#">Sweets</a></li>
               </ul>
@@ -126,7 +126,7 @@
             <li><a href=#.html">Forum <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href={{ url_for("posts.create_post") }}>Create Post</a></li>
-              <li><a href={{ url_for("posts.retrieve_posts") }}>View Posts</a></li>
+              <li><a href={{ url_for("posts.retrieve_posts") }}>View Post</a></li>
             </ul>
 
             <li><a href="/blog-archive">Blog <span class="caret"></span></a>
@@ -140,10 +140,10 @@
             <li><a href="/contact">Contact</a></li>
             <li><a href="#">Pages <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="/product">Shop Page</a></li>
+                <li><a href={{ url_for("shoppingcart.cart") }}>Cart</a></li>
                 <li><a href="/product-detail">Shop Single</a></li>
                 <li><a href="/404">404 Page</a></li>
-                <li><a href="/inventory">Inventory</a></li>
+                <li><a href={{ url_for("shoppingcart.add_cart") }}>Inventory</a></li>
               </ul>
             </li>
           </ul>
