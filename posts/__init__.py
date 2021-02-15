@@ -19,7 +19,7 @@ def create_post():
             print("Error in retrieving Posts from storage.db.")
 
         post = Post(create_post_form.title.data, create_post_form.content.data)
-        posts_dict[post.get_posts_id()] = post
+        posts_dict[post.get_id()] = post
         db['Posts'] = posts_dict
         db.close()
         return redirect(url_for('posts.retrieve_posts'))

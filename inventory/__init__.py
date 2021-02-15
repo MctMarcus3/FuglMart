@@ -5,6 +5,7 @@ from flask import (
 from functools import wraps
 from .Product import Product
 from .Form import InventoryForm, CreateInventoryForm
+
 import shelve
 import os
 from PIL import Image
@@ -19,7 +20,7 @@ def Restricted(func):
         if session.get("user_id") is None or \
            db.get('Users') is None or \
            db.get('Users')[session["user_id"]].get_admin() is False:
-            abort(404)
+            return render_template('404.html')
         db.close()
         val = func(*args, **kwargs)
         return val
