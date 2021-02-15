@@ -6,6 +6,8 @@ class Product:
         self.__category = category
         self.__company = company
         self.__price = price
+        self.__oldprice = ''
+        self.__badge = ''
 
     def get_name(self):
         return self.__name
@@ -22,8 +24,14 @@ class Product:
     def get_price(self):
         return self.__price
 
+    def get_oldprice(self):
+        return self.__oldprice
+
     def get_category(self):
         return self.__category
+
+    def get_badge(self):
+        return self.__badge
 
     def set_name(self, name):
         self.__name = name
@@ -39,3 +47,9 @@ class Product:
 
     def set_category(self, category):
         self.__category = category
+
+    def set_oldprice(self, oldprice):
+        self.__oldprice = oldprice
+
+    def set_badge(self, badge):
+        self.__badge = badge

@@ -1,7 +1,7 @@
 from wtforms import StringField, DecimalField, IntegerField, validators, SelectField
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from .Validators import UPCValidator, ImageValidator
+from .Validators import UPCValidator, ImageValidator, LessThan
 import csv
 
 # Import Categories
@@ -10,6 +10,7 @@ with open('inventory/catagories.csv', 'r', encoding='utf-8') as csv_file:
     next(categories)
     categories = list(categories)
     categories.sort()
+
 
 
 class InventoryForm(FlaskForm):
@@ -41,6 +42,17 @@ class InventoryForm(FlaskForm):
         validators.InputRequired()])
 
     category = SelectField('Category', choices=categories)
+
+    badge = SelectField('Badge', choices=(['', 'N/A'], ['hot', 'Hot']))
+
+    oldprice = DecimalField('Old Price', validators=[
+        validators.NumberRange(
+            min=0,
+            message="Stock must be a postive number"),
+        LessThan('price', message='Old Price must be more than New Price'),
+        validators.Optional()],
+        places=2,
+        rounding=None)
 
     upc = StringField('UPC', validators=[validators.optional()], render_kw={'disabled': ''})
 
