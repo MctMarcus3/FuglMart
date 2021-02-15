@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from .Form import CreatePostForm, CreateCommentForm
-from .Posts import Posts, Comments
+from .Post import Post, Comment
 import shelve
 
 posts = Blueprint("posts", __name__, static_folder="static", template_folder="templates")
@@ -18,13 +18,12 @@ def create_post():
         except:
             print("Error in retrieving Posts from storage.db.")
 
-        post = Posts(create_post_form.title.data, create_post_form.content.data)
+        post = Post(create_post_form.title.data, create_post_form.content.data)
         posts_dict[post.get_posts_id()] = post
         db['Posts'] = posts_dict
         db.close()
         return redirect(url_for('posts.retrieve_posts'))
     return render_template('/Forum/createPost.html', form=create_post_form)
-
 
 @posts.route('/retrievePosts')
 def retrieve_posts():

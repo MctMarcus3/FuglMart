@@ -5,7 +5,6 @@ from flask import (
 from functools import wraps
 from .Product import Product
 from .Form import InventoryForm, CreateInventoryForm
-
 import shelve
 import os
 from PIL import Image
