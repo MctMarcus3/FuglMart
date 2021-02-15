@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, abort
 from .Form import CreatePostForm, CreateCommentForm, SearchForm
 from .Post import Post, Comment
 from functools import wraps
@@ -7,20 +7,22 @@ import shelve
 posts = Blueprint("posts", __name__, static_folder="static", template_folder="templates")
 
 
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash("You need to login first")
+# Wrapper function to test if user is Admin
+def login_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        db = shelve.open('storage.db', 'c')
+        if session.get("user_id") is None or db.get('Users') is None:
             return redirect(url_for('posts.retrieve_posts'))
 
-    return wrap
+        db.close()
+        val = func(*args, **kwargs)
+        return val
+    return wrapper
 
 
 @posts.route('/createPost', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def create_post():
     create_post_form = CreatePostForm(request.form)
     if request.method == 'POST' and create_post_form.validate():
@@ -34,8 +36,8 @@ def create_post():
         except KeyError:
             print("Error in retrieving Users or Posts from storage.db.")
         user = users_dict.get(session['user_id']).get_username()
-        session['username'] = user
-        post = Post(create_post_form.title.data, create_post_form.content.data, user)
+
+        post = Post(create_post_form.title.data, create_post_form.content.data, user, session['user_id'])
         posts_dict[post.get_id()] = post
         db['Posts'] = posts_dict
         db.close()
@@ -47,11 +49,12 @@ def create_post():
 @posts.route('/retrievePosts', methods=['POST', 'GET'])
 def retrieve_posts():
     posts_dict = {}
-    db = shelve.open('storage.db', 'r')
+    db = shelve.open('storage.db', 'c')
     try:
         posts_dict = db['Posts']
     except:
         print("Error in retrieving Posts from storage.db.")
+    # db['Posts'] = {}
     db.close()
 
     posts_list = []
@@ -68,6 +71,7 @@ def retrieve_posts():
 
 
 @posts.route('/updatePosts/<int:id>/', methods=['GET', 'POST'])
+@login_required
 def update_posts(id):
     update_post_form = CreatePostForm(request.form)
     if request.method == 'POST' and update_post_form.validate():
@@ -89,26 +93,37 @@ def update_posts(id):
         db.close()
 
         post = posts_dict.get(id)
+        if session['user_id'] != post.get_poster_id():
+            return redirect(url_for('posts.retrieve_thread', id=id))
         update_post_form.title.data = post.get_title()
         update_post_form.content.data = post.get_content()
         return render_template('/forum/updatePosts.html', form=update_post_form)
 
 
 @posts.route('/deletePost/<int:id>', methods=['POST'])
+@login_required
 def delete_post(id):
     posts_dict = {}
     db = shelve.open('storage.db', 'w')
     posts_dict = db['Posts']
-
-    posts_dict.pop(id)
+    post = posts_dict.get(id)
+    if session['user_id'] != post.get_poster_id():
+        return redirect(url_for('posts.retrieve_thread', id=id))
+    try:
+        posts_dict.pop(id)
+    except KeyError:
+        abort(404)
 
     db['Posts'] = posts_dict
+    # db['Posts'] = {}
+
     db.close()
 
     return redirect(url_for('posts.retrieve_posts'))
 
 
 @posts.route('/retrieveThread/<int:id>/', methods=['GET', 'POST'])
+
 def retrieve_thread(id):
     form = CreateCommentForm(request.form)
     posts_dict = {}
@@ -116,50 +131,65 @@ def retrieve_thread(id):
     posts_dict = db['Posts']
     post = posts_dict.get(id)
     if request.method == 'POST' and form.validate():
-        comment = Comment(form.comment.data, session['username'])
+        comment = Comment(form.comment.data, session['username'], session['user_id'])
         post.add_comment(comment)
         db['Posts'] = posts_dict
         return redirect(url_for(f'posts.retrieve_thread', id=id))
     else:
+        # db['Posts'] = {}
         db.close()
         return render_template("forum/retrieveThread.html", post=post, form=form)
 
 
-@posts.route('/updateComments/<int:id>/', methods=['GET', 'POST'])
-def update_comments(id):
+@posts.route('/retrieveThread/<int:postid>/updateComment/<int:commentid>', methods=['GET', 'POST'])
+@login_required
+def update_comment(postid, commentid):
     update_comment_form = CreateCommentForm(request.form)
     if request.method == 'POST' and update_comment_form.validate():
-        comments_dict = {}
+        posts_dict = {}
         db = shelve.open('storage.db', 'w')
-        comments_dict = db['comments']
+        posts_dict = db['Posts']
 
-        comment = comments_dict.get(id)
-        comment.set_comment(update_comment_form.comment.data)
-        comment.set_content(update_comment_form.content.data)
-        db['Comments'] = comments_dict
+        post = posts_dict.get(postid)
+        for i in post.get_comments():
+            if i.get_id() == commentid:
+                i.set_content(update_comment_form.comment.data)
+
+        posts_dict['postid'] = post
+        db['Posts'] = posts_dict
         db.close()
 
-        return redirect(url_for('posts.retrieve_thread'))
+        return redirect(url_for('posts.retrieve_thread', id=postid))
     else:
-        comments_dict = {}
+        posts_dict = {}
         db = shelve.open('storage.db', 'r')
-        comments_dict = db['Comments']
+        posts_dict = db['Posts']
+
+        post = posts_dict.get(postid)
+        if session['user_id'] != post.get_poster_id():
+            return redirect(url_for('posts.retrieve_thread', id=postid))
+        for i in post.get_comments():
+            if i.get_id() == commentid:
+                update_comment_form.comment.data = i.get_content()
         db.close()
 
-        comment = comments_dict.get(id)
-        update_comment_form.comment.data = comment.get_comments()
-        return render_template('/forum/updateComments.html', form=update_comment_form)
+        return render_template('/forum/updateComment.html', form=update_comment_form)
 
 
 @posts.route('/retrieveThread/<int:postid>/deleteComment/<int:commentid>', methods=['POST'])
+@login_required
 def delete_comment(postid, commentid):
     posts_dict = {}
     db = shelve.open('storage.db', 'w')
     posts_dict = db['Posts']
+    post = posts_dict.get(postid, commentid)
+    if session['user_id'] != post.get_poster_id():
+        return redirect(url_for('posts.retrieve_thread', id=postid))
+    post = posts_dict.get(postid)
+    [post.get_comments().remove(i) for i in post.get_comments() if i.get_id() == commentid]
 
-    posts_dict.pop(id)
-
+    posts_dict['postid'] = post
     db['Posts'] = posts_dict
     db.close()
 
-    return redirect(url_for('posts.retrieve_thread'))
+    return redirect(url_for('posts.retrieve_thread', id=postid))
