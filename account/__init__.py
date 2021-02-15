@@ -10,7 +10,7 @@ account = Blueprint("account", __name__,
 
 @account.route('/', methods=['GET'])
 def index():
-    if session['user_id'] is not None:
+    if session.get('user_id') is not None:
         return redirect(url_for('account.profile'))
     create_user_form = CreateUserForm(request.form)
     return render_template('account.html', form=create_user_form)
