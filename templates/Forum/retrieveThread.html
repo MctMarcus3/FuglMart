@@ -5,19 +5,25 @@
 <h1 class="display-4">Forum</h1>
 <div class="row">
     <div class="col-lg-3">
-        <a href={{ url_for("posts.create_post")}} data-toggle="modal" class="btn btn-primary" title="Add Post">
+        <a href={{ url_for("posts.create_post") }} data-toggle="modal" class="btn btn-primary" title="Add Post">
             <i class="glyphicon glyphicon-plus-sign"></i> Add Post
         </a>
     </div>
 </div>
-
 <style>
-    #forum {
+    #comment {
     padding: 15px;
     margin-top: 20px;
     margin-bottom: 20px;
     font-size: 12px;
     box-shadow: 0px 0px 13px -3px;
+    }
+    #forum {
+    padding: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    border: 1px solid black;
     }
 </style>
 <div id = 'forum'>
@@ -33,5 +39,39 @@
         </div>
     </div>
 </div>
-
+<div>
+    <div class="col-lg-3">
+    <a href={{ url_for("posts.create_comment") }} data-toggle="modal" class="btn btn-primary" title="Add Comment">
+    <i class="glyphicon glyphicon-plus-sign"></i> Add Comment</a>
+    </div>
+</div>
+<a href="/forum/retrieveComment">Comments</a>
+{% for comment in comments_list %}
+<div id = 'comment'>
+    <div class="thread">
+        <div>
+            <p>Posted By: user time of post</p>
+        </div>
+        <div class="comment">
+            <p>{{ comment.get_comment() }}</p>
+        </div>
+    </div>
+    <div class="media">
+        <div class="media-left">
+            <img class="media-object news-img" src="img/testimonial-img-2.jpg" alt="img">
+        </div>
+    </div>
+</div>
+{% endfor %}
+<div id="respond">
+    <h3 class="reply-title">Leave a Comment</h3>
+    <form id="commentform">
+      <p class="comment-form-comment">
+        <textarea name="comment" cols="45" rows="8" aria-required="true" required="required"></textarea>
+      </p>
+      <p class="form-submit">
+        <input type="submit" name="submit" class="aa-browse-btn" value="Post Comment">
+      </p>
+    </form>
+    </div>
 {% endblock %}

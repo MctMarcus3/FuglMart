@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .Form import CreatePostForm
-from .Posts import Posts
+from .Form import CreatePostForm, CreateCommentForm
+from .Posts import Posts, Comments
 import shelve
 
 posts = Blueprint("posts", __name__, static_folder="static", template_folder="templates")
@@ -37,31 +37,11 @@ def retrieve_posts():
     db.close()
 
     posts_list = []
-    # print(posts_dict)
-    # print(posts_list)
     for key in posts_dict:
         posts = posts_dict.get(key)
         posts_list.append(posts)
         print(key, posts)
     return render_template('/Forum/test5.html', count=len(posts_list), posts_list=posts_list)
-
-
-# @posts.route('/retrieveThread/<int:id>/', methods=['GET'])
-# def retrieve_thread(id):
-#     posts_dict = {}
-#     db = shelve.open('storage.db', 'r')
-#     try:
-#         posts_dict = db['Posts']
-#     except:
-#         print("Error in retrieving Posts from storage.db.")
-#     db.close()
-#
-#     posts_list = []
-#     for key in posts_dict:
-#         posts = posts_dict.get(key)
-#         posts_list.append(posts)
-#
-#     return render_template('/Forum/retrieveThread.html', count=len(posts_list), posts_list=posts_list)
 
 
 @posts.route('/updatePosts/<int:id>/', methods=['GET', 'POST'])
@@ -96,34 +76,14 @@ def delete_post(id):
     posts_dict = {}
     db = shelve.open('storage.db', 'w')
     posts_dict = db['Posts']
-    print(posts_dict)
 
     posts_dict.pop(id)
 
     db['Posts'] = posts_dict
     db.close()
 
-    return redirect(url_for('post.retrieve_posts'))
+    return redirect(url_for('posts.retrieve_posts'))
 
-
-# @posts.route('/createComment', methods=['GET', 'POST'])
-# def create_comment():
-#     create_comment_form = CreateCommentForm(request.form)
-#     if request.method == 'POST' and create_comment_form.validate():
-#         comment_dict = {}
-#         db = shelve.open('storage.db', 'c')
-#
-#         try:
-#             posts_dict = db['Posts']
-#         except:
-#             print("Error in retrieving Posts from storage.db.")
-#
-#         post = Posts(create_comment_form.comment_content.data)
-#         posts_dict[post.get_posts_id()] = post
-#         db['Posts'] = posts_dict
-#         db.close()
-#         return redirect(url_for('posts.retrieve_posts'))
-#     return render_template('/Forum/createPost.html', form=create_post_form)
 
 @posts.route('/retrieveThread/<int:id>/', methods=['GET'])
 def retrieve_thread(id):
@@ -134,3 +94,46 @@ def retrieve_thread(id):
     db['Posts'] = posts_dict
     db.close()
     return render_template("forum/retrieveThread.html", post=post)
+
+
+@posts.route('/createComment', methods=['GET', 'POST'])
+def create_comment():
+    create_comment_form = CreateCommentForm(request.form)
+    if request.method == 'POST' and create_comment_form.validate():
+        comments_dict = {}
+        db = shelve.open('storage.db', 'c')
+
+        try:
+            comments_dict = db['Comments']
+        except KeyError:
+            print("Error in retrieving comments from storage.db.")
+
+        comment = Comments(create_comment_form.comment.data, create_comment_form.content.data)
+        comments_dict[comment.get_comment_id()] = comment
+        db['comments'] = comments_dict
+        db.close()
+        return redirect(url_for('posts.retrieve_posts'))
+    return render_template('/Forum/createComment.html', form=create_comment_form)
+
+
+@posts.route('/retrieveComment')
+def retrieve_comments():
+    db = shelve.open('storage.db', 'w')
+    comments_dict = db['Comments']
+    comment = comments_dict.get(id)
+    db['Comments'] = comments_dict
+    db.close()
+    return render_template("forum/retrieveThread.html", post=comment)
+    # comments_dict = {}
+    # db = shelve.open('storage.db', 'r')
+    # try:
+    #     comments_dict = db['Comments']
+    # except KeyError:
+    #     print("Error in retrieving Comments from storage.db.")
+    # db.close()
+    #
+    # comments_list = []
+    # for key in comments_dict:
+    #     comments = comments_dict.get(key)
+    #     comments_list.append(comments)
+    # return render_template('/Forum/retrieveComment.html', count=len(comments_list), comments_list=comments_list)

@@ -7,4 +7,5 @@ class CreatePostForm(Form):
 
 
 class CreateCommentForm(Form):
-    content = TextAreaField('comment_Content', [validators.Optional()])
+    comment = TextAreaField('Add Comment', [validators.Optional()])
+    content = TextAreaField()
