@@ -23,16 +23,14 @@ class Post(Comment):
         self.__comments = []
         super().__init__(content)
 
-
     def get_title(self):
         return self.__title
-
 
     def set_title(self, title):
         self.__title = title
 
     def get_comments(self):
-        return self.comments
+        return self.__comments
 
     def add_comment(self, comment):
-        self.comments.append(comment)
+        self.__comments.append(comment)

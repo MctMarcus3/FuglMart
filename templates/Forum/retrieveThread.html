@@ -2,6 +2,8 @@
 {% block title %}Forum - View Posts{% endblock %}
 
 {% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+
 <h1 class="display-4">Forum</h1>
 <div class="row">
     <div class="col-lg-3">
@@ -41,19 +43,24 @@
 </div>
 <div>
     <div class="col-lg-3">
-    <a href={{ url_for("posts.create_comment") }} data-toggle="modal" class="btn btn-primary" title="Add Comment">
-    <i class="glyphicon glyphicon-plus-sign"></i> Add Comment</a>
+    <!-- <a href={{ url_for("posts.create_comment") }} data-toggle="modal" class="btn btn-primary" title="Add Comment">
+    <i class="glyphicon glyphicon-plus-sign"></i> Add Comment</a> -->
+    <form method="POST" action=''>
+      <div class="form-group">
+        {{ render_field(form.comment, class="form-control") }}
+      </div>
+    <input type="submit" value="Submit" class="btn btn-primary"/>
     </div>
 </div>
 <a href="/forum/retrieveComment">Comments</a>
-{% for comment in comments_list %}
+{% for comment in post.get_comments() %}
 <div id = 'comment'>
     <div class="thread">
         <div>
             <p>Posted By: user time of post</p>
         </div>
         <div class="comment">
-            <p>{{ comment.get_comment() }}</p>
+            <p>{{ comment.get_content() }}</p>
         </div>
     </div>
     <div class="media">
@@ -63,15 +70,5 @@
     </div>
 </div>
 {% endfor %}
-<div id="respond">
-    <h3 class="reply-title">Leave a Comment</h3>
-    <form id="commentform">
-      <p class="comment-form-comment">
-        <textarea name="comment" cols="45" rows="8" aria-required="true" required="required"></textarea>
-      </p>
-      <p class="form-submit">
-        <input type="submit" name="submit" class="aa-browse-btn" value="Post Comment">
-      </p>
-    </form>
-    </div>
+
 {% endblock %}
