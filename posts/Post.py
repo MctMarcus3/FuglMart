@@ -3,7 +3,7 @@ class Comment:
 
     def __init__(self, content):
         Comment.count_id += 1
-        self.__id = post.count_id
+        self.__id = Comment.count_id
         self.__content = content
         self.__user = ''
 
@@ -33,7 +33,7 @@ class Post(Comment):
 
     def get_comments(self):
         return self.comments
-        
+
     def set_title(self, title):
         self.__title = title
 
