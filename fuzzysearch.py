@@ -29,4 +29,5 @@ l = [
     }
 ]
 
-print([d for d in l if any("ip" in v for v in d.values())])
+search = "ip"
+print([d for d in l if any(search in v for v in d.values())])

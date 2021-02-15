@@ -1,7 +1,7 @@
 from wtforms import StringField, DecimalField, IntegerField, validators, SelectField
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from .Validators import UPCValidator
+from .Validators import UPCValidator, ImageValidator
 import csv
 
 # Import Categories
@@ -46,7 +46,8 @@ class InventoryForm(FlaskForm):
 
     image = FileField('Image', validators=[
         FileRequired(),
-        FileAllowed(['jpg', 'png'], 'Images only!')
+        FileAllowed(['jpg', 'png'], 'Images only!'),
+        ImageValidator()
         ],
         render_kw={"onchange": "loadFile(event)"})
 

@@ -1,10 +1,14 @@
-from flask import Blueprint, render_template, request, url_for, redirect, session, abort
+from flask import (
+                    Blueprint,
+                    render_template,
+                    request, url_for, redirect, session, abort, send_from_directory)
 from functools import wraps
 from .Product import Product
 from .Form import InventoryForm, CreateInventoryForm
-from werkzeug.utils import secure_filename
+
 import shelve
 import os
+from PIL import Image
 import csv
 import json
 
@@ -24,6 +28,7 @@ def Restricted(func):
 
 
 inventory = Blueprint("inventory", __name__, static_folder="static", template_folder="templates")
+invIMGpath = os.path.join("inventoryimages")
 
 # Implement CSV upload, CSV Download, JSON Upload, JSON Download
 # Implement FuzzySearch
@@ -68,20 +73,17 @@ def createNewProduct():
                           create_inventory_form.category.data,
                           create_inventory_form.price.data)
         if inventory_dict.get(product.get_upc()) is None:
-            f = create_inventory_form.image.data
-            f.filename = secure_filename(
-                    f"{create_inventory_form.upc.data}.{f.filename.split('.')[-1]}"
-                    )
-            path = os.path.join("inventoryimages", create_inventory_form.upc.data)
+            f = Image.open(create_inventory_form.image.data)
+            f = f.convert("RGB")
+            path = os.path.join(invIMGpath, create_inventory_form.upc.data)
             try:
                 os.makedirs(path)
             except FileExistsError:
                 pass
-            path = os.path.join(path, f.filename)
+            path = os.path.join(path, f"{create_inventory_form.upc.data}.jpg")
             f.save(path)
             inventory_dict[product.get_upc()] = product
             db['inventory'] = inventory_dict
-            print('Product Added into DB')
             db.close()
             return redirect(url_for('inventory.createNewProduct'))
 
@@ -140,6 +142,11 @@ def delete_product(id):
     session['product_deleted'] = product.get_name()
 
     return redirect(url_for("inventory.retrieve_inventory"))
+
+
+@inventory.route('/img/<path:id>')
+def image(id):
+    return send_from_directory(f"{invIMGpath}/{id}", f"{id}.jpg")
 
 
 @inventory.errorhandler(404)

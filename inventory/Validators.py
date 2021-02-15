@@ -1,5 +1,5 @@
 from wtforms import ValidationError
-
+from PIL import Image
 
 class UPCValidator():
     field_flags = ('accepts_UPC8, accepts_UPC12, accepts_UPC13, accepts_UPC14, accepts_UPC18')
@@ -28,3 +28,18 @@ class UPCValidator():
         checkSum = (10 - ((evenTotal + oddTotal) % 10)) % 10
         if checkSum != lastDigit:
             raise ValidationError(f"{self.message} (Invalid checksum {checkSum} got {lastDigit})")
+
+
+class ImageValidator():
+    field_flags = ('accepts_IMAGES')
+
+    def __init__(self, message=None):
+        if not message:
+            self.message = "Invalid image file."
+
+    def __call__(self, form, field):
+        try:
+            f = Image.open(field.data)
+            f = f.convert("RGB")
+        except Image.UnidentifiedImageError:
+            raise ValidationError(self.message)
