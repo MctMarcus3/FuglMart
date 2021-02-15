@@ -12,7 +12,7 @@ class CreateUserForm(Form):
 
 class UserProfile(Form):
     email = EmailField('Email', [validators.Email(), validators.DataRequired()], render_kw={"placeholder": "cookie@fugl.store"})
-    # street_address = TextAreaField('Street Address', [validators.DataRequired()])
-    # postal_code = StringField('Postal Code', [validators.Length(min=6, max=6), validators.DataRequired()])
-    # number = StringField('Phone Number', [validators.Length(min=8, max=8), validators.DataRequired()])
-    username = StringField('Username', [validators.DataRequired(), validators.Length(min=3, max=20)])
+    street_address = TextAreaField('Street Address', [validators.DataRequired()])
+    postal_code = StringField('Postal Code', [validators.Length(min=6, max=6), validators.DataRequired()])
+    number = StringField('Phone Number', [validators.Length(min=8, max=8), validators.DataRequired()])
+    username = StringField('Username', [])

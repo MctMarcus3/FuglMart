@@ -6,8 +6,9 @@ class Product:
         self.__category = category
         self.__company = company
         self.__price = price
-        self.__oldprice = ''
-        self.__badge = ''
+        self.__oldprice = None
+        self.__badge = None
+        self.__description = ''
 
     def get_name(self):
         return self.__name

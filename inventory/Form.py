@@ -12,6 +12,9 @@ with open('inventory/catagories.csv', 'r', encoding='utf-8') as csv_file:
     categories.sort()
 
 
+class SearchForm(FlaskForm):
+    search = StringField('Search', validators=[])
+
 
 class InventoryForm(FlaskForm):
     productName = StringField('Product Name', validators=[

@@ -4,7 +4,7 @@ from flask import (
                     request, url_for, redirect, session, abort, send_from_directory)
 from functools import wraps
 from .Product import Product
-from .Form import InventoryForm, CreateInventoryForm
+from .Form import InventoryForm, CreateInventoryForm, SearchForm
 import shelve
 import os
 from PIL import Image
@@ -34,25 +34,33 @@ invIMGpath = os.path.join("inventoryimages")
 # Implement FuzzySearch
 
 
-@inventory.route("/")
+@inventory.route("/", methods=['POST', 'GET'])
 @Restricted
 def retrieve_inventory():
+    searchform = SearchForm()
     db = shelve.open('storage.db', 'c')
     inventory_dict = {}
     if db.get('inventory') is not None:
         inventory_dict = db['inventory']
     else:
         db['inventory'] = {}
-    print(db['inventory'])
     db.close()
 
     inventory_list = []
     for key in inventory_dict:
         product = inventory_dict.get(key)
         inventory_list.append(product)
-
-    return render_template('/inventory/retrieveInventoryNew.html', count=len(inventory_list),
-                           inventory_list=inventory_list)
+    if request.method == 'POST':
+        search = searchform.search.data
+        print('Hello')
+        # for d in inventory_list:
+        #     print(d)
+        #     if any(search in v for v in d.get_name()):
+        # inventory_list = [d for d in inventory_list if any(search in v for v in d.__dict__]
+        print(inventory_list)
+    return render_template('/inventory/retrieveInventoryNew.html',
+                           count=len(inventory_list),
+                           inventory_list=inventory_list, form=searchform)
 
 
 @inventory.route('/createproduct', methods=['GET', 'POST'])
@@ -114,6 +122,8 @@ def update_product(id):
         product.set_price(update_product_form.price.data)
         product.set_company(update_product_form.company.data)
         product.set_category(update_product_form.category.data)
+        product.set_oldprice(update_product_form.oldprice.data)
+        product.set_badge(update_product_form.badge.data)
         db['inventory'] = inventory_dict
         db.close()
         session['product_created'] = product.get_name()
@@ -132,6 +142,11 @@ def update_product(id):
         update_product_form.upc.data = product.get_upc()
         update_product_form.company.data = product.get_company()
         update_product_form.category.data = product.get_category()
+        if product.get_badge() is not None or product.get_badge() != '':
+            update_product_form.badge.data = product.get_badge()
+        if product.get_oldprice() is not None or product.get_oldprice() != '':
+            update_product_form.oldprice.data = product.get_oldprice()
+
         return render_template('/inventory/productInfo.html', form=update_product_form)
 
 

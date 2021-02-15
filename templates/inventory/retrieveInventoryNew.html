@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% from "./includes/_formHelper.html" import render_field %}
 <h1 class="display-4">Inventory</h1>
 <a href="/inventory/createproduct" class="btn btn-primary">Create</a>
 <div class="aa-product-catg-body">
   <ul class="aa-product-catg">
+    <form class="" action="" method="post">
+            {{ render_field(form.search, class="form-control") }}
+    </form>
   {% if inventory_list %}
     {% for product in inventory_list %}
     <!-- start single product item -->
@@ -13,7 +17,7 @@
         <a class="aa-product-img" href={{url_for("inventory.update_product", id=product.get_upc())}}><img src={{url_for("inventory.image", id=product.get_upc())}} alt={{product.get_upc()}}></a>
         <a class="aa-add-card-btn"href={{url_for("inventory.update_product", id=product.get_upc())}}><span class="fa fa-shopping-cart"></span>Add To Cart</a>
         <figcaption>
-          <h4 class="aa-product-title"><a href={{url_for("inventory.update_product", id=product.get_upc())}}>{{product.get_name()}}</a></h4>
+          <h4 class="aa-product-title"><a href={{url_for("inventory.update_product", id=product.get_category())}}>{{product.get_name()}}</a></h4>
           <span class="aa-product-price">{{"$%.2f"|format(product.get_price())}}</span>
           {% if product.get_oldprice() %}
           <span class="aa-product-price"><del>{{"$%.2f"|format(product.get_oldprice())}}</del></span>

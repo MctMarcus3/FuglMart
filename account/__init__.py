@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, Blueprint, session, jsonify 
+from flask import render_template, request, redirect, url_for, Blueprint, session, jsonify
 import shelve
 from .Form import CreateUserForm, UserProfile
 from .User import User
@@ -78,18 +78,19 @@ def login():
     return render_template('account.html', form=login_user_form)
 
 
-@account.route('/profile')
+@account.route('/profile', methods=['POST', 'GET'])
 def profile():
     user_id = session['user_id']
     update_user_form = UserProfile(request.form)
     users_dict = {}
     db = shelve.open('storage.db', 'c')
-
     try:
         users_dict = db['Users']
     except KeyError:
         print("Error in retrieving Users from storage.db.")
     user = users_dict.get(session['user_id'])
+    print(session['user_id'])
+    print(users_dict)
     if request.method == 'POST' and update_user_form.validate():
         user.set_username(update_user_form.username.data)
         return redirect(url_for('account.profile'))

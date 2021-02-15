@@ -19,6 +19,7 @@ def create_post():
             posts_dict = db['Posts']
         except KeyError:
             print("Error in retrieving Users or Posts from storage.db.")
+        print(users_dict)
         user = users_dict.get(session['user_id']).get_username()
 
         post = Post(create_post_form.title.data, create_post_form.content.data, user)
