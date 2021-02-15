@@ -6,12 +6,15 @@ dnspython==2.1.0
 email-validator==1.1.2
 flake8==3.8.4
 Flask==1.1.2
+Flask-Reuploaded==0.5.0
+Flask-WTF==0.14.3
 idna==3.1
 itsdangerous==1.1.0
 Jinja2==2.11.2
 jsonschema==3.2.0
 MarkupSafe==1.1.1
 mccabe==0.6.1
+Pillow==8.1.0
 pycodestyle==2.6.0
 pyflakes==2.2.0
 pyrsistent==0.17.3
