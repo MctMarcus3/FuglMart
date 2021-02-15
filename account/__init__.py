@@ -8,10 +8,14 @@ account = Blueprint("account", __name__,
                     template_folder="templates")
 
 
-@account.route('', methods=['GET'])
+@account.route('/', methods=['GET'])
 def index():
+    if session['user_id'] is not None:
+        return redirect(url_for('account.profile'))
     create_user_form = CreateUserForm(request.form)
     return render_template('account.html', form=create_user_form)
+
+
 
 @account.route('/create', methods=['POST', 'GET'])
 def create():
@@ -67,7 +71,6 @@ def login():
         for user in users_dict.values():
             if user.get_email() == login_user_form.email.data:
                 if user.get_password() == login_user_form.password.data:
-                    print(user.__dict__)
                     session['user_id'] = user.get_accountId()
                     return redirect(url_for('account.profile'))
         # Check if email and password matches with database
@@ -83,6 +86,7 @@ def profile():
         return redirect(url_for('account.profile'))
     # update_user_form.title.data = user.get_email()
     return render_template('profile.html', form=update_user_form, user_id=user_id)
+
 
 @account.route('/deleteUser/<int:id>', methods=['POST'])
 def delete_user(id):
