@@ -20,7 +20,7 @@
             <div class="aa-header-top-right">
               <ul class="aa-head-top-nav-right">
                 {% if session['user_id'] %}
-                <li><a href={ url_for("account.index")}>My Account</a></li>
+                <li><a href={{ url_for("account.profile")}}>My Account</a></li>
                 <li class="hidden-xs"><a href="/cart">My Cart</a></li>
                 <li class="hidden-xs"><a href="/checkout">Checkout</a></li>
                 <li><a href={{ url_for("account.logout") }}>Logout</a></li>
