@@ -1,12 +1,26 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from .Form import CreatePostForm, CreateCommentForm, SearchForm
 from .Post import Post, Comment
+from functools import wraps
 import shelve
 
 posts = Blueprint("posts", __name__, static_folder="static", template_folder="templates")
 
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('posts.retrieve_posts'))
+
+    return wrap
+
+
 @posts.route('/createPost', methods=['GET', 'POST'])
+#@login_required
 def create_post():
     create_post_form = CreatePostForm(request.form)
     if request.method == 'POST' and create_post_form.validate():
@@ -21,7 +35,8 @@ def create_post():
             print("Error in retrieving Users or Posts from storage.db.")
         print(users_dict)
         user = users_dict.get(session['user_id']).get_username()
-
+        print(user)
+        print(session['user_id'])
         post = Post(create_post_form.title.data, create_post_form.content.data, user)
         posts_dict[post.get_id()] = post
         db['Posts'] = posts_dict
@@ -45,12 +60,14 @@ def retrieve_posts():
     for key in posts_dict:
         posts = posts_dict.get(key)
         posts_list.append(posts)
-        print(key, posts)
+        # print(key, posts)
     searchform = SearchForm(request.form)
-    if request.method == 'POST':
-        search = searchform.search.data
-        posts_list = [d for d in posts_list if any(search in v for v in d.get_title())]
-
+    # if request.method == 'POST':
+    #     search = searchform.search.data
+    #     posts_list = [d for d in posts_list if any(search in v for v in d.get_title())]
+    print(posts_list)
+    print([i.get_poster() for i in posts_list])
+    print(posts_list[1].get_poster())
     return render_template('/Forum/test5.html', count=len(posts_list), posts_list=posts_list, form=searchform)
 
 

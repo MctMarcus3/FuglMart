@@ -28,7 +28,6 @@
     <input type="submit" value="Submit" class="btn btn-primary"/>
     </form>
 </div>
-{% for post in posts_list %}
 <style>
     .card {
     margin-top: 20px;
@@ -53,9 +52,10 @@
     padding: 15px;
     }
 </style>
+{% for post in posts_list %}
 <div class = 'card'>
     <div class="card-header">
-        <p>Posted By: user time of post</p>
+        <p>Posted By: {{ post.get_poster() }}</p>
     </div>
     <div class="card-body">
         <h3><a href="/forum/retrieveThread/{{post.get_id()}}">{{ post.get_title() }}</a></h3>
