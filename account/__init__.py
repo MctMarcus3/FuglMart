@@ -88,11 +88,11 @@ def profile():
         users_dict = db['Users']
     except KeyError:
         print("Error in retrieving Users from storage.db.")
-    user = users_dict.get(session['user_id'])
-    print(session['user_id'])
-    print(users_dict)
+    user = users_dict.get(user_id)
     if request.method == 'POST' and update_user_form.validate():
         user.set_username(update_user_form.username.data)
+        users_dict[user_id] = user
+        db['Users'] = users_dict
         return redirect(url_for('account.profile'))
     # update_user_form.title.data = user.get_email()
     return render_template('profile.html', form=update_user_form, user_id=user_id)
