@@ -36,8 +36,8 @@ invIMGpath = os.path.join("inventoryimages")
 
 @inventory.route("/", methods=['POST', 'GET'])
 @Restricted
+# searchform = SearchForm()
 def retrieve_inventory():
-    searchform = SearchForm()
     db = shelve.open('storage.db', 'c')
     inventory_dict = {}
     if db.get('inventory') is not None:
@@ -51,8 +51,8 @@ def retrieve_inventory():
         product = inventory_dict.get(key)
         inventory_list.append(product)
     if request.method == 'POST':
-        search = searchform.search.data
-        print('Hello')
+        # search = searchform.search.data
+        # print('Hello')
         # for d in inventory_list:
         #     print(d)
         #     if any(search in v for v in d.get_name()):
@@ -60,7 +60,7 @@ def retrieve_inventory():
         print(inventory_list)
     return render_template('/inventory/retrieveInventoryNew.html',
                            count=len(inventory_list),
-                           inventory_list=inventory_list, form=searchform)
+                           inventory_list=inventory_list)
 
 
 @inventory.route('/createproduct', methods=['GET', 'POST'])
@@ -95,6 +95,7 @@ def createNewProduct():
             except FileExistsError:
                 pass
             path = os.path.join(path, f"{create_inventory_form.upc.data}.jpg")
+
             f.save(path)
             inventory_dict[product.get_upc()] = product
             db['inventory'] = inventory_dict
@@ -142,6 +143,20 @@ def update_product(id):
         update_product_form.upc.data = product.get_upc()
         update_product_form.company.data = product.get_company()
         update_product_form.category.data = product.get_category()
+        if update_product_form.image.data is not None:
+            f = Image.open(update_product_form.image.data)
+            f = f.convert("RGB")
+            path = os.path.join(invIMGpath, update_product_form.upc.data)
+            try:
+                os.makedirs(path)
+            except FileExistsError:
+                pass
+            path = os.path.join(path, f"{update_product_form.upc.data}.jpg")
+            try:
+                os.remove(path)
+            except FileNotFoundError:
+                pass
+            f.save(path)
         if product.get_badge() is not None or product.get_badge() != '':
             update_product_form.badge.data = product.get_badge()
         if product.get_oldprice() is not None or product.get_oldprice() != '':
